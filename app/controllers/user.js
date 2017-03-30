@@ -1,8 +1,10 @@
-const async = require('async');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
-const passport = require('passport');
-const User = require('../models/User');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const async = require("async");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+const passport = require("passport");
+const User_1 = require("../models/User");
 /**
  * GET /login
  * Login page.
@@ -79,11 +81,11 @@ exports.postSignup = (req, res, next) => {
         req.flash('errors', errors);
         return res.redirect('/signup');
     }
-    const user = new User({
+    const user = new User_1.default({
         email: req.body.email,
         password: req.body.password
     });
-    User.findOne({ email: req.body.email }, (err, existingUser) => {
+    User_1.default.findOne({ email: req.body.email }, (err, existingUser) => {
         if (err) {
             return next(err);
         }
@@ -125,7 +127,7 @@ exports.postUpdateProfile = (req, res, next) => {
         req.flash('errors', errors);
         return res.redirect('/account');
     }
-    User.findById(req.user.id, (err, user) => {
+    User_1.default.findById(req.user.id, (err, user) => {
         if (err) {
             return next(err);
         }
@@ -159,7 +161,7 @@ exports.postUpdatePassword = (req, res, next) => {
         req.flash('errors', errors);
         return res.redirect('/account');
     }
-    User.findById(req.user.id, (err, user) => {
+    User_1.default.findById(req.user.id, (err, user) => {
         if (err) {
             return next(err);
         }
@@ -178,7 +180,7 @@ exports.postUpdatePassword = (req, res, next) => {
  * Delete user account.
  */
 exports.postDeleteAccount = (req, res, next) => {
-    User.remove({ _id: req.user.id }, (err) => {
+    User_1.default.remove({ _id: req.user.id }, (err) => {
         if (err) {
             return next(err);
         }
@@ -193,7 +195,7 @@ exports.postDeleteAccount = (req, res, next) => {
  */
 exports.getOauthUnlink = (req, res, next) => {
     const provider = req.params.provider;
-    User.findById(req.user.id, (err, user) => {
+    User_1.default.findById(req.user.id, (err, user) => {
         if (err) {
             return next(err);
         }
@@ -216,7 +218,7 @@ exports.getReset = (req, res, next) => {
     if (req.isAuthenticated()) {
         return res.redirect('/');
     }
-    User
+    User_1.default
         .findOne({ passwordResetToken: req.params.token })
         .where('passwordResetExpires').gt(Date.now())
         .exec((err, user) => {
@@ -246,7 +248,7 @@ exports.postReset = (req, res, next) => {
     }
     async.waterfall([
         function resetPassword(done) {
-            User
+            User_1.default
                 .findOne({ passwordResetToken: req.params.token })
                 .where('passwordResetExpires').gt(Date.now())
                 .exec((err, user) => {
@@ -328,7 +330,7 @@ exports.postForgot = (req, res, next) => {
             });
         },
         function setRandomToken(token, done) {
-            User.findOne({ email: req.body.email }, (err, user) => {
+            User_1.default.findOne({ email: req.body.email }, (err, user) => {
                 if (err) {
                     return done(err);
                 }

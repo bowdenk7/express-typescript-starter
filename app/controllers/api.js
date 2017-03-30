@@ -1,14 +1,14 @@
 'use strict';
-const async = require('async');
-const request = require('request');
-const graph = require('fbgraph');
-const GitHub = require('github');
-const Twit = require('twit');
-const stripe = require('stripe')(process.env.STRIPE_SKEY);
-const twilio = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
-const paypal = require('paypal-rest-sdk');
-const ig = require('instagram-node').instagram();
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const request = require("request");
+const graph = require("fbgraph");
+const GitHub = require("github");
+const Twit = require("twit");
+const stripe = require("stripe");
+const twilio = require("twilio");
+const paypal = require("paypal-rest-sdk");
+const Stripe = stripe(process.env.STRIPE_SKEY);
+const Twilio = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 /**
  * GET /api
  * List of API examples.
@@ -18,7 +18,6 @@ exports.getApi = (req, res) => {
         title: 'API Examples'
     });
 };
-
 /**
  * GET /api/facebook
  * Facebook API example.
@@ -36,14 +35,13 @@ exports.getFacebook = (req, res, next) => {
         });
     });
 };
-
 /**
  * GET /api/github
  * GitHub API Example.
  */
 exports.getGithub = (req, res, next) => {
     const github = new GitHub();
-    github.repos.get({ user: 'sahat', repo: 'hackathon-starter' }, (err, repo) => {
+    github.repos.get({ owner: 'sahat', repo: 'hackathon-starter' }, (err, repo) => {
         if (err) {
             return next(err);
         }
@@ -53,8 +51,6 @@ exports.getGithub = (req, res, next) => {
         });
     });
 };
-
-
 /**
  * GET /api/twitter
  * Twitter API example.
@@ -103,7 +99,6 @@ exports.postTwitter = (req, res, next) => {
         res.redirect('/api/twitter');
     });
 };
-
 /**
  * GET /api/stripe
  * Stripe API example.
@@ -121,7 +116,7 @@ exports.getStripe = (req, res) => {
 exports.postStripe = (req, res) => {
     const stripeToken = req.body.stripeToken;
     const stripeEmail = req.body.stripeEmail;
-    stripe.charges.create({
+    Stripe.charges.create({
         amount: 395,
         currency: 'usd',
         source: stripeToken,
@@ -161,57 +156,12 @@ exports.postTwilio = (req, res, next) => {
         from: '+13472235148',
         body: req.body.message
     };
-    twilio.sendMessage(message, (err, responseData) => {
+    Twilio.sendMessage(message, (err, responseData) => {
         if (err) {
             return next(err.message);
         }
         req.flash('success', { msg: `Text sent to ${responseData.to}.` });
         res.redirect('/api/twilio');
-    });
-};
-
-
-
-/**
- * GET /api/instagram
- * Instagram API example.
- */
-exports.getInstagram = (req, res, next) => {
-    const token = req.user.tokens.find(token => token.kind === 'instagram');
-    ig.use({ client_id: process.env.INSTAGRAM_ID, client_secret: process.env.INSTAGRAM_SECRET });
-    ig.use({ access_token: token.accessToken });
-    async.parallel({
-        searchByUsername: (done) => {
-            ig.user_search('richellemead', (err, users) => {
-                done(err, users);
-            });
-        },
-        searchByUserId: (done) => {
-            ig.user('175948269', (err, user) => {
-                done(err, user);
-            });
-        },
-        popularImages: (done) => {
-            ig.media_popular((err, medias) => {
-                done(err, medias);
-            });
-        },
-        myRecentMedia: (done) => {
-            ig.user_self_media_recent((err, medias) => {
-                done(err, medias);
-            });
-        }
-    }, (err, results) => {
-        if (err) {
-            return next(err);
-        }
-        res.render('api/instagram', {
-            title: 'Instagram API',
-            usernames: results.searchByUsername,
-            userById: results.searchByUserId,
-            popularImages: results.popularImages,
-            myRecentMedia: results.myRecentMedia
-        });
     });
 };
 /**
@@ -279,5 +229,58 @@ exports.getPayPalCancel = (req, res) => {
     res.render('api/paypal', {
         result: true,
         canceled: true
+    });
+};
+/**
+ * GET /api/pinterest
+ * Pinterest API example.
+ */
+exports.getPinterest = (req, res, next) => {
+    const token = req.user.tokens.find(token => token.kind === 'pinterest');
+    request.get({ url: 'https://api.pinterest.com/v1/me/boards/', qs: { access_token: token.accessToken }, json: true }, (err, request, body) => {
+        if (err) {
+            return next(err);
+        }
+        res.render('api/pinterest', {
+            title: 'Pinterest API',
+            boards: body.data
+        });
+    });
+};
+/**
+ * POST /api/pinterest
+ * Create a pin.
+ */
+exports.postPinterest = (req, res, next) => {
+    req.assert('board', 'Board is required.').notEmpty();
+    req.assert('note', 'Note cannot be blank.').notEmpty();
+    req.assert('image_url', 'Image URL cannot be blank.').notEmpty();
+    const errors = req.validationErrors();
+    if (errors) {
+        req.flash('errors', errors);
+        return res.redirect('/api/pinterest');
+    }
+    const token = req.user.tokens.find(token => token.kind === 'pinterest');
+    const formData = {
+        board: req.body.board,
+        note: req.body.note,
+        link: req.body.link,
+        image_url: req.body.image_url
+    };
+    request.post('https://api.pinterest.com/v1/pins/', { qs: { access_token: token.accessToken }, form: formData }, (err, request, body) => {
+        if (err) {
+            return next(err);
+        }
+        if (request.statusCode !== 201) {
+            req.flash('errors', { msg: JSON.parse(body).message });
+            return res.redirect('/api/pinterest');
+        }
+        req.flash('success', { msg: 'Pin created' });
+        res.redirect('/api/pinterest');
+    });
+};
+exports.getGoogleMaps = (req, res) => {
+    res.render('api/google-maps', {
+        title: 'Google Maps API'
     });
 };

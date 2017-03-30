@@ -1,8 +1,8 @@
-const bcrypt = require('bcrypt-nodejs');
-const crypto = require('crypto');
-const mongoose = require('mongoose');
+import * as bcrypt from 'bcrypt-nodejs';
+import * as crypto from 'crypto';
+import * as mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+export type UserType = Document & {
   email: { type: String, unique: true },
   password: String,
   passwordResetToken: String,
@@ -12,9 +12,31 @@ const userSchema = new mongoose.Schema({
   twitter: String,
   google: String,
   github: String,
-  instagram: String,
-  linkedin: String,
-  steam: String,
+  tokens: Array<any>,
+
+  profile: {
+    name: String,
+    gender: String,
+    location: String,
+    website: String,
+    picture: String
+  },
+
+  comparePassword: (candidatePassword: string, cb: (err, isMatch) => {}) => void,
+  gravatar: (size: number) => string
+}
+
+
+let userSchema = new mongoose.Schema({
+  email: { type: String, unique: true },
+  password: String,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+
+  facebook: String,
+  twitter: String,
+  google: String,
+  github: String,
   tokens: Array,
 
   profile: {
@@ -42,14 +64,12 @@ userSchema.pre('save', function save(next) {
   });
 });
 
-/**
- * Helper method for validating user's password.
- */
-userSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
+userSchema.method("comparePassword", function comparePassword(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
     cb(err, isMatch);
   });
-};
+})
+
 
 /**
  * Helper method for getting user's gravatar.
@@ -65,6 +85,6 @@ userSchema.methods.gravatar = function gravatar(size) {
   return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
 };
 
+//export const User: UserType = mongoose.model<UserType>('User', userSchema);
 const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+export default User;

@@ -2,7 +2,7 @@ import * as async from 'async';
 import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 import * as passport from 'passport';
-import * as User from '../models/User';
+import {default as User} from '../models/User';
 
 /**
  * GET /login
@@ -134,7 +134,7 @@ export var postUpdateProfile = (req, res, next) => {
     return res.redirect('/account');
   }
 
-  User.findById(req.user.id, (err, user) => {
+  User.findById(req.user.id, (err, user: any) => {
     if (err) { return next(err); }
     user.email = req.body.email || '';
     user.profile.name = req.body.name || '';
@@ -170,7 +170,7 @@ export var postUpdatePassword = (req, res, next) => {
     return res.redirect('/account');
   }
 
-  User.findById(req.user.id, (err, user) => {
+  User.findById(req.user.id, (err, user: any) => {
     if (err) { return next(err); }
     user.password = req.body.password;
     user.save((err) => {
@@ -200,7 +200,7 @@ export var postDeleteAccount = (req, res, next) => {
  */
 export var getOauthUnlink = (req, res, next) => {
   const provider = req.params.provider;
-  User.findById(req.user.id, (err, user) => {
+  User.findById(req.user.id, (err, user: any) => {
     if (err) { return next(err); }
     user[provider] = undefined;
     user.tokens = user.tokens.filter(token => token.kind !== provider);
@@ -255,7 +255,7 @@ export var postReset = (req, res, next) => {
       User
         .findOne({ passwordResetToken: req.params.token })
         .where('passwordResetExpires').gt(Date.now())
-        .exec((err, user) => {
+        .exec((err, user: any) => {
           if (err) { return next(err); }
           if (!user) {
             req.flash('errors', { msg: 'Password reset token is invalid or has expired.' });
@@ -333,7 +333,7 @@ export var postForgot = (req, res, next) => {
       });
     },
     function setRandomToken(token, done) {
-      User.findOne({ email: req.body.email }, (err, user) => {
+      User.findOne({ email: req.body.email }, (err, user: any) => {
         if (err) { return done(err); }
         if (!user) {
           req.flash('errors', { msg: 'Account with that email address does not exist.' });
