@@ -2,11 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const request = require("request");
 const graph = require("fbgraph");
-const GitHub = require("github");
-const Twit = require("twit");
 const stripe = require("stripe");
 const twilio = require("twilio");
-const paypal = require("paypal-rest-sdk");
 const Stripe = stripe(process.env.STRIPE_SKEY);
 const Twilio = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 /**

@@ -9,9 +9,6 @@ export type UserType = Document & {
   passwordResetExpires: Date,
 
   facebook: String,
-  twitter: String,
-  google: String,
-  github: String,
   tokens: Array<any>,
 
   profile: {

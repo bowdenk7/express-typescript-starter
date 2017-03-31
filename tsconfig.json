@@ -2,11 +2,15 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es6",
-        "noImplicitAny": false,
+        "noImplicitAny": true,
         "sourceMap": false,
         "allowJs": true,
         "moduleResolution": "node",
-        "outDir": "app"
+        "outDir": "app",
+        "baseUrl": ".",
+        "paths": {
+          "*": ["src/types/*"]
+        }
     },
     "include": [
         "src/**/*"

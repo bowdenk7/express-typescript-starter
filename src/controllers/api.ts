@@ -3,11 +3,8 @@
 import * as async from 'async';
 import * as request from 'request';
 import * as graph from 'fbgraph';
-import * as GitHub from 'github';
-import * as Twit from 'twit';
 import * as stripe from 'stripe';
 import * as twilio from 'twilio';
-import * as paypal from 'paypal-rest-sdk';
 
 
 const Stripe = stripe(process.env.STRIPE_SKEY);

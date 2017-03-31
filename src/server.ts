@@ -7,7 +7,7 @@ import * as session from 'express-session';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
 import * as errorHandler from 'errorhandler';
-import * as lusca from 'lusca';
+import * as lusca from 'lusca'; 
 import * as dotenv from 'dotenv';
 import * as mongo from 'connect-mongo'; //(session)
 import * as flash from 'express-flash';
@@ -15,6 +15,8 @@ import * as path from 'path';
 import * as mongoose from 'mongoose';
 import * as passport from 'passport';
 import * as expressStatusMonitor from 'express-status-monitor';
+
+
 
 let MongoStore = mongo(session);
 
@@ -76,7 +78,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.use(lusca.xframe('SAMEORIGIN'));
+app.use(lusca.xframe('SAMEORIGIN')); 
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
   res.locals.user = req.user;
