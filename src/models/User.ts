@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt-nodejs';
 import * as crypto from 'crypto';
 import * as mongoose from 'mongoose';
 
-export type UserType = Document & {
+export type UserModel = mongoose.Document & {
   email: { type: String, unique: true },
   password: String,
   passwordResetToken: String,
@@ -19,7 +19,7 @@ export type UserType = Document & {
     picture: String
   },
 
-  comparePassword: (candidatePassword: string, cb: (err, isMatch) => {}) => void,
+  comparePassword: (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void,
   gravatar: (size: number) => string
 }
 
@@ -33,7 +33,6 @@ let userSchema = new mongoose.Schema({
   facebook: String,
   twitter: String,
   google: String,
-  github: String,
   tokens: Array,
 
   profile: {
@@ -53,7 +52,7 @@ userSchema.pre('save', function save(next) {
   if (!user.isModified('password')) { return next(); }
   bcrypt.genSalt(10, (err, salt) => {
     if (err) { return next(err); }
-    bcrypt.hash(user.password, salt, null, (err, hash) => {
+    bcrypt.hash(user.password, salt, null, (err: mongoose.Error, hash) => {
       if (err) { return next(err); }
       user.password = hash;
       next();
@@ -61,17 +60,17 @@ userSchema.pre('save', function save(next) {
   });
 });
 
-userSchema.method("comparePassword", function comparePassword(candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+userSchema.methods.comparePassword = function(candidatePassword: string, cb: (err: any, isMatch: any) => {}) {
+  bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error , isMatch: boolean) => {
     cb(err, isMatch);
   });
-})
+};
 
 
 /**
  * Helper method for getting user's gravatar.
  */
-userSchema.methods.gravatar = function gravatar(size) {
+userSchema.methods.gravatar = function(size: number) {
   if (!size) {
     size = 200;
   }

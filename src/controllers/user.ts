@@ -2,13 +2,14 @@ import * as async from 'async';
 import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 import * as passport from 'passport';
-import {default as User} from '../models/User';
+import {default as User, UserModel} from '../models/User';
+import {Request, Response, NextFunction} from 'express';
 
 /**
  * GET /login
  * Login page.
  */
-export var getLogin = (req, res) => {
+export var getLogin = (req: Request, res: Response) => {
   if (req.user) {
     return res.redirect('/');
   }
@@ -21,7 +22,7 @@ export var getLogin = (req, res) => {
  * POST /login
  * Sign in using email and password.
  */
-export var postLogin = (req, res, next) => {
+export var postLogin = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password cannot be blank').notEmpty();
   req.sanitize('email').normalizeEmail({ remove_dots: false });
@@ -33,7 +34,7 @@ export var postLogin = (req, res, next) => {
     return res.redirect('/login');
   }
 
-  passport.authenticate('local', (err, user, info) => {
+  passport.authenticate('local', (err: Error, user: UserModel, info) => {
     if (err) { return next(err); }
     if (!user) {
       req.flash('errors', info);
@@ -51,7 +52,7 @@ export var postLogin = (req, res, next) => {
  * GET /logout
  * Log out.
  */
-export var logout = (req, res) => {
+export var logout = (req: Request, res: Response) => {
   req.logout();
   res.redirect('/');
 };
@@ -60,7 +61,7 @@ export var logout = (req, res) => {
  * GET /signup
  * Signup page.
  */
-export var getSignup = (req, res) => {
+export var getSignup = (req: Request, res: Response) => {
   if (req.user) {
     return res.redirect('/');
   }
@@ -73,7 +74,7 @@ export var getSignup = (req, res) => {
  * POST /signup
  * Create a new local account.
  */
-export var postSignup = (req, res, next) => {
+export var postSignup = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
@@ -113,7 +114,7 @@ export var postSignup = (req, res, next) => {
  * GET /account
  * Profile page.
  */
-export var getAccount = (req, res) => {
+export var getAccount = (req: Request, res: Response) => {
   res.render('account/profile', {
     title: 'Account Management'
   });
@@ -123,7 +124,7 @@ export var getAccount = (req, res) => {
  * POST /account/profile
  * Update profile information.
  */
-export var postUpdateProfile = (req, res, next) => {
+export var postUpdateProfile = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Please enter a valid email address.').isEmail();
   req.sanitize('email').normalizeEmail({ remove_dots: false });
 
@@ -134,14 +135,14 @@ export var postUpdateProfile = (req, res, next) => {
     return res.redirect('/account');
   }
 
-  User.findById(req.user.id, (err, user: any) => {
+  User.findById(req.user.id, (err, user: UserModel) => {
     if (err) { return next(err); }
     user.email = req.body.email || '';
     user.profile.name = req.body.name || '';
     user.profile.gender = req.body.gender || '';
     user.profile.location = req.body.location || '';
     user.profile.website = req.body.website || '';
-    user.save((err) => {
+    user.save((err: NodeJS.ErrnoException) => {
       if (err) {
         if (err.code === 11000) {
           req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
@@ -159,7 +160,7 @@ export var postUpdateProfile = (req, res, next) => {
  * POST /account/password
  * Update current password.
  */
-export var postUpdatePassword = (req, res, next) => {
+export var postUpdatePassword = (req: Request, res: Response, next: NextFunction) => {
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
 
@@ -185,7 +186,7 @@ export var postUpdatePassword = (req, res, next) => {
  * POST /account/delete
  * Delete user account.
  */
-export var postDeleteAccount = (req, res, next) => {
+export var postDeleteAccount = (req: Request, res: Response, next: NextFunction) => {
   User.remove({ _id: req.user.id }, (err) => {
     if (err) { return next(err); }
     req.logout();
@@ -198,7 +199,7 @@ export var postDeleteAccount = (req, res, next) => {
  * GET /account/unlink/:provider
  * Unlink OAuth provider.
  */
-export var getOauthUnlink = (req, res, next) => {
+export var getOauthUnlink = (req: Request, res: Response, next: NextFunction) => {
   const provider = req.params.provider;
   User.findById(req.user.id, (err, user: any) => {
     if (err) { return next(err); }
@@ -216,7 +217,7 @@ export var getOauthUnlink = (req, res, next) => {
  * GET /reset/:token
  * Reset Password page.
  */
-export var getReset = (req, res, next) => {
+export var getReset = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     return res.redirect('/');
   }
@@ -239,7 +240,7 @@ export var getReset = (req, res, next) => {
  * POST /reset/:token
  * Process the reset password request.
  */
-export var postReset = (req, res, next) => {
+export var postReset = (req: Request, res: Response, next: NextFunction) => {
   req.assert('password', 'Password must be at least 4 characters long.').len(4);
   req.assert('confirm', 'Passwords must match.').equals(req.body.password);
 
@@ -301,7 +302,7 @@ export var postReset = (req, res, next) => {
  * GET /forgot
  * Forgot Password page.
  */
-export var getForgot = (req, res) => {
+export var getForgot = (req: Request, res: Response) => {
   if (req.isAuthenticated()) {
     return res.redirect('/');
   }
@@ -314,7 +315,7 @@ export var getForgot = (req, res) => {
  * POST /forgot
  * Create a random token, then the send user an email with a reset link.
  */
-export var postForgot = (req, res, next) => {
+export var postForgot = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Please enter a valid email address.').isEmail();
   req.sanitize('email').normalizeEmail({ remove_dots: false });
 

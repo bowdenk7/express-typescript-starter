@@ -6,6 +6,7 @@ import * as passportFacebook from 'passport-facebook';
 
 //import { User, UserType } from '../models/User';
 import { default as User } from '../models/User';
+import {Request, Response, NextFunction} from "express";
 
 const LocalStrategy = passportLocal.Strategy;
 const FacebookStrategy = passportFacebook.Strategy;
@@ -29,7 +30,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
     if (!user) {
       return done(null, false, { message: `Email ${email} not found.` });
     }
-    user.comparePassword(password, (err, isMatch) => {
+    user.comparePassword(password, (err: Error, isMatch: boolean) => {
       if (err) { return done(err); }
       if (isMatch) {
         return done(null, user);
@@ -38,6 +39,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
     });
   });
 }));
+
 
 /**
  * OAuth Strategy Overview
@@ -78,7 +80,7 @@ passport.use(new FacebookStrategy({
           user.profile.name = user.profile.name || `${profile.name.givenName} ${profile.name.familyName}`;
           user.profile.gender = user.profile.gender || profile._json.gender;
           user.profile.picture = user.profile.picture || `https://graph.facebook.com/${profile.id}/picture?type=large`;
-          user.save((err) => {
+          user.save((err: Error) => {
             req.flash('info', { msg: 'Facebook account has been linked.' });
             done(err, user);
           });
@@ -105,7 +107,7 @@ passport.use(new FacebookStrategy({
           user.profile.gender = profile._json.gender;
           user.profile.picture = `https://graph.facebook.com/${profile.id}/picture?type=large`;
           user.profile.location = (profile._json.location) ? profile._json.location.name : '';
-          user.save((err) => {
+          user.save((err: Error) => {
             done(err, user);
           });
         }
@@ -117,7 +119,7 @@ passport.use(new FacebookStrategy({
 /**
  * Login Required middleware.
  */
-export let isAuthenticated = (req, res, next) => {
+export let isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     return next();
   }
@@ -127,7 +129,7 @@ export let isAuthenticated = (req, res, next) => {
 /**
  * Authorization Required middleware.
  */
-export let isAuthorized = (req, res, next) => {
+export let isAuthorized = (req: Request, res: Response, next: NextFunction) => {
   const provider = req.path.split('/').slice(-1)[0];
 
   if (_.find(req.user.tokens, { kind: provider })) {

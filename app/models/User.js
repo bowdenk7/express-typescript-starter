@@ -11,7 +11,6 @@ let userSchema = new mongoose.Schema({
     facebook: String,
     twitter: String,
     google: String,
-    github: String,
     tokens: Array,
     profile: {
         name: String,
@@ -42,15 +41,15 @@ userSchema.pre('save', function save(next) {
         });
     });
 });
-userSchema.method("comparePassword", function comparePassword(candidatePassword, cb) {
+userSchema.methods.comparePassword = function (candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
         cb(err, isMatch);
     });
-});
+};
 /**
  * Helper method for getting user's gravatar.
  */
-userSchema.methods.gravatar = function gravatar(size) {
+userSchema.methods.gravatar = function (size) {
     if (!size) {
         size = 200;
     }

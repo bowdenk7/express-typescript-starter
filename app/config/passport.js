@@ -25,7 +25,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
             return done(err);
         }
         if (!user) {
-            return done(null, false, { msg: `Email ${email} not found.` });
+            return done(null, false, { message: `Email ${email} not found.` });
         }
         user.comparePassword(password, (err, isMatch) => {
             if (err) {
@@ -34,7 +34,7 @@ passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, don
             if (isMatch) {
                 return done(null, user);
             }
-            return done(null, false, { msg: 'Invalid email or password.' });
+            return done(null, false, { message: 'Invalid email or password.' });
         });
     });
 }));
