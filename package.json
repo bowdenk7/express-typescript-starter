@@ -9,10 +9,14 @@
   "author": "Sahat Yalkabov",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build-sass && gulp build-ts && node app/server.js",
+    "start": "npm run watch",
+    "build": "npm run build-sass && gulp build-ts && node app/server.js",
+    "watch": "concurrently -n -k \"npm run watch-sass\" \"gulp watch-ts\" \"nodemon app/server.js\"",
     "test": "mocha --reporter spec",
     "build-ts": "gulp build-ts",
-    "build-sass": "node-sass src/public/css/main.scss app/public/css/main.css"
+    "watch-ts": "gulp watch-ts",
+    "build-sass": "node-sass src/public/css/main.scss app/public/css/main.css",
+    "watch-sass": "node-sass -w src/public/css/main.scss app/public/css/main.css"
   },
   "dependencies": {
     "async": "^2.1.2",
@@ -67,7 +71,6 @@
     "@types/errorhandler": "0.0.30",
     "@types/express": "^4.0.35",
     "@types/express-session": "0.0.32",
-    "@types/express-validator": "^2.20.33",
     "@types/jquery": "^2.0.41",
     "@types/lodash": "^4.14.60",
     "@types/mongoose": "^4.7.9",
@@ -80,6 +83,7 @@
     "@types/request": "0.0.42",
     "@types/twilio": "0.0.8",
     "chai": "^3.5.0",
+    "concurrently": "^3.4.0",
     "eslint": "^3.9.1",
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.1.0",

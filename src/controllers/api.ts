@@ -26,29 +26,13 @@ export var getApi = (req: Request, res: Response) => {
  * Facebook API example.
  */
 export var getFacebook = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.user.tokens.find(token => token.kind === 'facebook');
+  const token = req.user.tokens.find((token: any) => token.kind === 'facebook');
   graph.setAccessToken(token.accessToken);
-  graph.get(`${req.user.facebook}?fields=id,name,email,first_name,last_name,gender,link,locale,timezone`, (err, results) => {
+  graph.get(`${req.user.facebook}?fields=id,name,email,first_name,last_name,gender,link,locale,timezone`, (err: Error, results: graph.FacebookUser) => {
     if (err) { return next(err); }
     res.render('api/facebook', {
       title: 'Facebook API',
       profile: results
-    });
-  });
-};
-
-
-/**
- * GET /api/github
- * GitHub API Example.
- */
-export var getGithub = (req: Request, res: Response, next: NextFunction) => {
-  const github = new GitHub();
-  github.repos.get({ owner: 'sahat', repo: 'hackathon-starter' }, (err, repo) => {
-    if (err) { return next(err); }
-    res.render('api/github', {
-      title: 'GitHub API',
-      repo
     });
   });
 };

@@ -7,3 +7,7 @@ gulp.task("build-ts", function () {
         .pipe(tsProject())
         .js.pipe(gulp.dest("app"));
 });
+
+gulp.task("watch-ts", function() {
+    gulp.watch("./src/**/*.ts", ["build-ts"]);
+});

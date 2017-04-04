@@ -17,7 +17,7 @@ exports.getApi = (req, res) => {
  * Facebook API example.
  */
 exports.getFacebook = (req, res, next) => {
-    const token = req.user.tokens.find(token => token.kind === 'facebook');
+    const token = req.user.tokens.find((token) => token.kind === 'facebook');
     graph.setAccessToken(token.accessToken);
     graph.get(`${req.user.facebook}?fields=id,name,email,first_name,last_name,gender,link,locale,timezone`, (err, results) => {
         if (err) {
@@ -26,22 +26,6 @@ exports.getFacebook = (req, res, next) => {
         res.render('api/facebook', {
             title: 'Facebook API',
             profile: results
-        });
-    });
-};
-/**
- * GET /api/github
- * GitHub API Example.
- */
-exports.getGithub = (req, res, next) => {
-    const github = new GitHub();
-    github.repos.get({ owner: 'sahat', repo: 'hackathon-starter' }, (err, repo) => {
-        if (err) {
-            return next(err);
-        }
-        res.render('api/github', {
-            title: 'GitHub API',
-            repo
         });
     });
 };

@@ -2,8 +2,11 @@ import * as async from 'async';
 import * as crypto from 'crypto';
 import * as nodemailer from 'nodemailer';
 import * as passport from 'passport';
-import {default as User, UserModel} from '../models/User';
+import {default as User, UserModel, AuthToken} from '../models/User';
 import {Request, Response, NextFunction} from 'express';
+import {LocalStrategyInfo} from 'passport-local';
+import {MongoError} from "mongodb";
+
 
 /**
  * GET /login
@@ -25,7 +28,7 @@ export var getLogin = (req: Request, res: Response) => {
 export var postLogin = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password cannot be blank').notEmpty();
-  req.sanitize('email').normalizeEmail({ remove_dots: false });
+  req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
 
   const errors = req.validationErrors();
 
@@ -34,7 +37,7 @@ export var postLogin = (req: Request, res: Response, next: NextFunction) => {
     return res.redirect('/login');
   }
 
-  passport.authenticate('local', (err: Error, user: UserModel, info) => {
+  passport.authenticate('local', (err: Error, user: UserModel, info: LocalStrategyInfo) => {
     if (err) { return next(err); }
     if (!user) {
       req.flash('errors', info);
@@ -78,7 +81,7 @@ export var postSignup = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
-  req.sanitize('email').normalizeEmail({ remove_dots: false });
+  req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
 
   const errors = req.validationErrors();
 
@@ -126,7 +129,7 @@ export var getAccount = (req: Request, res: Response) => {
  */
 export var postUpdateProfile = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Please enter a valid email address.').isEmail();
-  req.sanitize('email').normalizeEmail({ remove_dots: false });
+  req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
 
   const errors = req.validationErrors();
 
@@ -142,7 +145,7 @@ export var postUpdateProfile = (req: Request, res: Response, next: NextFunction)
     user.profile.gender = req.body.gender || '';
     user.profile.location = req.body.location || '';
     user.profile.website = req.body.website || '';
-    user.save((err: NodeJS.ErrnoException) => {
+    user.save((err: MongoError) => {
       if (err) {
         if (err.code === 11000) {
           req.flash('errors', { msg: 'The email address you have entered is already associated with an account.' });
@@ -174,7 +177,7 @@ export var postUpdatePassword = (req: Request, res: Response, next: NextFunction
   User.findById(req.user.id, (err, user: any) => {
     if (err) { return next(err); }
     user.password = req.body.password;
-    user.save((err) => {
+    user.save((err: MongoError) => {
       if (err) { return next(err); }
       req.flash('success', { msg: 'Password has been changed.' });
       res.redirect('/account');
@@ -204,8 +207,8 @@ export var getOauthUnlink = (req: Request, res: Response, next: NextFunction) =>
   User.findById(req.user.id, (err, user: any) => {
     if (err) { return next(err); }
     user[provider] = undefined;
-    user.tokens = user.tokens.filter(token => token.kind !== provider);
-    user.save((err) => {
+    user.tokens = user.tokens.filter((token: AuthToken) => token.kind !== provider);
+    user.save((err: MongoError) => {
       if (err) { return next(err); }
       req.flash('info', { msg: `${provider} account has been unlinked.` });
       res.redirect('/account');
@@ -252,7 +255,7 @@ export var postReset = (req: Request, res: Response, next: NextFunction) => {
   }
 
   async.waterfall([
-    function resetPassword(done) {
+    function resetPassword(done: Function) {
       User
         .findOne({ passwordResetToken: req.params.token })
         .where('passwordResetExpires').gt(Date.now())
@@ -265,7 +268,7 @@ export var postReset = (req: Request, res: Response, next: NextFunction) => {
           user.password = req.body.password;
           user.passwordResetToken = undefined;
           user.passwordResetExpires = undefined;
-          user.save((err) => {
+          user.save((err: MongoError) => {
             if (err) { return next(err); }
             req.logIn(user, (err) => {
               done(err, user);
@@ -273,7 +276,7 @@ export var postReset = (req: Request, res: Response, next: NextFunction) => {
           });
         });
     },
-    function sendResetPasswordEmail(user, done) {
+    function sendResetPasswordEmail(user: UserModel, done: Function) {
       const transporter = nodemailer.createTransport({
         service: 'SendGrid',
         auth: {
@@ -317,7 +320,7 @@ export var getForgot = (req: Request, res: Response) => {
  */
 export var postForgot = (req: Request, res: Response, next: NextFunction) => {
   req.assert('email', 'Please enter a valid email address.').isEmail();
-  req.sanitize('email').normalizeEmail({ remove_dots: false });
+  req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
 
   const errors = req.validationErrors();
 
@@ -327,13 +330,13 @@ export var postForgot = (req: Request, res: Response, next: NextFunction) => {
   }
 
   async.waterfall([
-    function createRandomToken(done) {
+    function createRandomToken(done: Function) {
       crypto.randomBytes(16, (err, buf) => {
         const token = buf.toString('hex');
         done(err, token);
       });
     },
-    function setRandomToken(token, done) {
+    function setRandomToken(token: AuthToken, done: Function) {
       User.findOne({ email: req.body.email }, (err, user: any) => {
         if (err) { return done(err); }
         if (!user) {
@@ -342,12 +345,12 @@ export var postForgot = (req: Request, res: Response, next: NextFunction) => {
         }
         user.passwordResetToken = token;
         user.passwordResetExpires = Date.now() + 3600000; // 1 hour
-        user.save((err) => {
+        user.save((err: MongoError) => {
           done(err, token, user);
         });
       });
     },
-    function sendForgotPasswordEmail(token, user, done) {
+    function sendForgotPasswordEmail(token: AuthToken, user: UserModel, done: Function) {
       const transporter = nodemailer.createTransport({
         service: 'SendGrid',
         auth: {

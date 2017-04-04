@@ -24,7 +24,7 @@ exports.getLogin = (req, res) => {
 exports.postLogin = (req, res, next) => {
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password cannot be blank').notEmpty();
-    req.sanitize('email').normalizeEmail({ remove_dots: false });
+    req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
     const errors = req.validationErrors();
     if (errors) {
         req.flash('errors', errors);
@@ -75,7 +75,7 @@ exports.postSignup = (req, res, next) => {
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('password', 'Password must be at least 4 characters long').len(4);
     req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
-    req.sanitize('email').normalizeEmail({ remove_dots: false });
+    req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
     const errors = req.validationErrors();
     if (errors) {
         req.flash('errors', errors);
@@ -121,7 +121,7 @@ exports.getAccount = (req, res) => {
  */
 exports.postUpdateProfile = (req, res, next) => {
     req.assert('email', 'Please enter a valid email address.').isEmail();
-    req.sanitize('email').normalizeEmail({ remove_dots: false });
+    req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
     const errors = req.validationErrors();
     if (errors) {
         req.flash('errors', errors);
@@ -200,7 +200,7 @@ exports.getOauthUnlink = (req, res, next) => {
             return next(err);
         }
         user[provider] = undefined;
-        user.tokens = user.tokens.filter(token => token.kind !== provider);
+        user.tokens = user.tokens.filter((token) => token.kind !== provider);
         user.save((err) => {
             if (err) {
                 return next(err);
@@ -316,7 +316,7 @@ exports.getForgot = (req, res) => {
  */
 exports.postForgot = (req, res, next) => {
     req.assert('email', 'Please enter a valid email address.').isEmail();
-    req.sanitize('email').normalizeEmail({ remove_dots: false });
+    req.sanitize('email').normalizeEmail({ gmail_remove_dots: false });
     const errors = req.validationErrors();
     if (errors) {
         req.flash('errors', errors);

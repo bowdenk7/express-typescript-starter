@@ -3,26 +3,30 @@ import * as crypto from 'crypto';
 import * as mongoose from 'mongoose';
 
 export type UserModel = mongoose.Document & {
-  email: { type: String, unique: true },
-  password: String,
-  passwordResetToken: String,
+  email: string,
+  password: string,
+  passwordResetToken: string,
   passwordResetExpires: Date,
 
-  facebook: String,
-  tokens: Array<any>,
+  facebook: string,
+  tokens: AuthToken[],
 
   profile: {
-    name: String,
-    gender: String,
-    location: String,
-    website: String,
-    picture: String
+    name: string,
+    gender: string,
+    location: string,
+    website: string,
+    picture: string
   },
 
   comparePassword: (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void,
   gravatar: (size: number) => string
 }
 
+export type AuthToken = {
+  accessToken: string,
+  kind: string
+}
 
 let userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
