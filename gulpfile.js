@@ -26,7 +26,5 @@ gulp.task("tslint", function () {
         formatter: "prose",
         configuration: "tslint.json"
     }))
-    .pipe(tslint.report({
-        summarizeFailureOutput: true
-    }))
+    .pipe(tslint.report())
 });

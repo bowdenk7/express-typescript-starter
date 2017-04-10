@@ -51,5 +51,5 @@ export type FacebookUser = {
     link: string,
     locale: string,
     timezone: number
-}
+};
 

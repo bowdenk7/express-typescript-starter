@@ -1,5 +1,0 @@
-$(document).ready(function () {
-    // Place JavaScript code here...
-});
-
-//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9wdWJsaWMvanMvbWFpbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxDQUFDLENBQUMsUUFBUSxDQUFDLENBQUMsS0FBSyxDQUFDO0lBQ2hCLGdDQUFnQztBQUVsQyxDQUFDLENBQUMsQ0FBQyIsImZpbGUiOiJwdWJsaWMvanMvbWFpbi5qcyIsInNvdXJjZXNDb250ZW50IjpbIiQoZG9jdW1lbnQpLnJlYWR5KGZ1bmN0aW9uKCkge1xyXG4gIC8vIFBsYWNlIEphdmFTY3JpcHQgY29kZSBoZXJlLi4uXHJcbiAgXHJcbn0pOyJdfQ==

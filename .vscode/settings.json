@@ -5,5 +5,8 @@
         "**/bower_components": true,
         "**/app": true
     },
-    "typescript.referencesCodeLens.enabled": true
+    "typescript.referencesCodeLens.enabled": true,
+    "tslint.ignoreDefinitionFiles": false,
+    "tslint.autoFixOnSave": true,
+    "tslint.exclude": "./node_modules/**/*"
 }

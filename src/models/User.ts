@@ -1,6 +1,6 @@
-import * as bcrypt from 'bcrypt-nodejs';
-import * as crypto from 'crypto';
-import * as mongoose from 'mongoose';
+import * as bcrypt from "bcrypt-nodejs";
+import * as crypto from "crypto";
+import * as mongoose from "mongoose";
 
 export type UserModel = mongoose.Document & {
   email: string,
@@ -21,14 +21,14 @@ export type UserModel = mongoose.Document & {
 
   comparePassword: (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void,
   gravatar: (size: number) => string
-}
+};
 
 export type AuthToken = {
   accessToken: string,
   kind: string
-}
+};
 
-let userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
   passwordResetToken: String,
@@ -51,12 +51,12 @@ let userSchema = new mongoose.Schema({
 /**
  * Password hash middleware.
  */
-userSchema.pre('save', function save(next) {
+userSchema.pre("save", function save(next) {
   const user = this;
-  if (!user.isModified('password')) { return next(); }
+  if (!user.isModified("password")) { return next(); }
   bcrypt.genSalt(10, (err, salt) => {
     if (err) { return next(err); }
-    bcrypt.hash(user.password, salt, null, (err: mongoose.Error, hash) => {
+    bcrypt.hash(user.password, salt, undefined, (err: mongoose.Error, hash) => {
       if (err) { return next(err); }
       user.password = hash;
       next();
@@ -81,10 +81,10 @@ userSchema.methods.gravatar = function(size: number) {
   if (!this.email) {
     return `https://gravatar.com/avatar/?s=${size}&d=retro`;
   }
-  const md5 = crypto.createHash('md5').update(this.email).digest('hex');
+  const md5 = crypto.createHash("md5").update(this.email).digest("hex");
   return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
 };
 
-//export const User: UserType = mongoose.model<UserType>('User', userSchema);
-const User = mongoose.model('User', userSchema);
+// export const User: UserType = mongoose.model<UserType>('User', userSchema);
+const User = mongoose.model("User", userSchema);
 export default User;
