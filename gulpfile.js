@@ -16,15 +16,17 @@ gulp.task("build-ts", function () {
         .pipe(gulp.dest("app"));
 });
 
-gulp.task("watch-ts", () => {
+gulp.task("watch-ts", function () {
     gulp.watch("./src/**/*.ts", ["build-ts"]);
 });
 
-gulp.task("tslint", () => {
-    gulp.src("./src/**/*.ts")
-        .pipe(tslint({
-            formatter: "verbose",
-            configuration: "tslint.json"
-        }))
-        .pipe(tslint.report())
+gulp.task("tslint", function () {
+    tsProject.src()
+    .pipe(tslint({
+        formatter: "prose",
+        configuration: "tslint.json"
+    }))
+    .pipe(tslint.report({
+        summarizeFailureOutput: true
+    }))
 });
