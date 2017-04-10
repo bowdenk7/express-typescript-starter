@@ -1,6 +1,5 @@
 {
     "rules": {
-        "no-bom": true,
         "class-name": true,
         "comment-format": [
             true,
@@ -56,21 +55,10 @@
                 "variable-declaration": "onespace"
             }
         ],
-        "next-line": [
-            true,
-            "check-catch",
-            "check-else"
-        ],
         "no-internal-module": true,
         "no-trailing-whitespace": true,
         "no-null-keyword": true,
-        "boolean-trivia": true,
-        "type-operator-spacing": true,
         "prefer-const": true,
-        "no-increment-decrement": true,
-        "object-literal-surrounding-space": true,
-        "no-type-assertion-whitespace": true,
-        "no-in-operator": true,
         "jsdoc-format": true
     }
 }

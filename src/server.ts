@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 import * as express from 'express';
-import * as compression from 'compression';  // compresses requests 
+import * as compression from 'compression';  // compresses requests
 import * as session from 'express-session';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';

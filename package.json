@@ -18,7 +18,8 @@
     "watch-ts": "gulp watch-ts",
     "build-sass": "node-sass src/public/css/main.scss app/public/css/main.css",
     "watch-sass": "node-sass -w src/public/css/main.scss app/public/css/main.css",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "dependencies": {
     "async": "^2.1.2",
@@ -91,11 +92,13 @@
     "eslint-plugin-import": "^2.1.0",
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^2.5.1",
+    "gulp-tslint": "^7.1.0",
     "gulp-typescript": "^3.1.6",
     "mocha": "^3.1.2",
     "sinon": "^1.17.6",
     "sinon-mongoose": "^1.3.0",
     "supertest": "^2.0.1",
+    "tslint": "^5.0.0",
     "typescript": "^2.2.2"
   },
   "eslintConfig": {
