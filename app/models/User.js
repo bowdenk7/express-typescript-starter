@@ -62,3 +62,5 @@ userSchema.methods.gravatar = function (size) {
 //export const User: UserType = mongoose.model<UserType>('User', userSchema);
 const User = mongoose.model('User', userSchema);
 exports.default = User;
+
+//# sourceMappingURL=User.js.map

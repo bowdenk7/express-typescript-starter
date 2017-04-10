@@ -9,13 +9,13 @@
             "request": "launch",
             "name": "Launch Program",
             "program": "${workspaceRoot}/app/server.js",
-            "cwd": "${workspaceRoot}"
-        },
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach to Process",
-            "port": 5858
+            "args": [
+                "inspect"
+            ],
+            "smartStep": true,
+            "outFiles": [
+                "./app/**/*.js"
+            ]
         }
     ]
 }

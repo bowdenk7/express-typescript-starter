@@ -19,8 +19,6 @@ export var getApi = (req: Request, res: Response) => {
   });
 };
 
-
-
 /**
  * GET /api/facebook
  * Facebook API example.

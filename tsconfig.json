@@ -3,7 +3,6 @@
         "module": "commonjs",
         "target": "es6",
         "noImplicitAny": true,
-        "sourceMap": false,
         "allowJs": true,
         "moduleResolution": "node",
         "outDir": "app",

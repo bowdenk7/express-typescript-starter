@@ -49,7 +49,7 @@ export var postLogin = (req: Request, res: Response, next: NextFunction) => {
       res.redirect(req.session.returnTo || '/');
     });
   })(req, res, next);
-};
+}; 
 
 /**
  * GET /logout

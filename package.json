@@ -9,14 +9,16 @@
   "author": "Sahat Yalkabov",
   "license": "MIT",
   "scripts": {
-    "start": "npm run watch",
+    "start": "npm run watch-debug",
     "build": "npm run build-sass && gulp build-ts && node app/server.js",
-    "watch": "concurrently -n -k \"npm run watch-sass\" \"gulp watch-ts\" \"nodemon app/server.js\"",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"gulp watch-ts\" \"nodemon app/server.js\"",
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"gulp watch-ts\" \"nodemon --debug app/server.js\"",
     "test": "mocha --reporter spec",
     "build-ts": "gulp build-ts",
     "watch-ts": "gulp watch-ts",
     "build-sass": "node-sass src/public/css/main.scss app/public/css/main.css",
-    "watch-sass": "node-sass -w src/public/css/main.scss app/public/css/main.css"
+    "watch-sass": "node-sass -w src/public/css/main.scss app/public/css/main.css",
+    "tsc": "tsc"
   },
   "dependencies": {
     "async": "^2.1.2",
@@ -88,6 +90,7 @@
     "eslint-config-airbnb-base": "^11.0.0",
     "eslint-plugin-import": "^2.1.0",
     "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.5.1",
     "gulp-typescript": "^3.1.6",
     "mocha": "^3.1.2",
     "sinon": "^1.17.6",

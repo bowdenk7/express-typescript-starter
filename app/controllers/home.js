@@ -9,3 +9,5 @@ exports.index = (req, res) => {
         title: 'Home'
     });
 };
+
+//# sourceMappingURL=home.js.map

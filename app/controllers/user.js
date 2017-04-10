@@ -374,3 +374,5 @@ exports.postForgot = (req, res, next) => {
         res.redirect('/forgot');
     });
 };
+
+//# sourceMappingURL=user.js.map
