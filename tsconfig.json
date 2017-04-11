@@ -3,7 +3,6 @@
         "module": "commonjs",
         "target": "es6",
         "noImplicitAny": true,
-        "allowJs": true,
         "moduleResolution": "node",
         "outDir": "app",
         "baseUrl": ".",
@@ -16,6 +15,6 @@
     ],
     "exclude": [
         "node_modules",
-        "public"
+        "app"
     ]
 }
