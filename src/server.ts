@@ -15,8 +15,6 @@ import * as path from "path";
 import * as mongoose from "mongoose";
 import * as passport from "passport";
 import expressValidator = require("express-validator");
-import * as expressStatusMonitor from "express-status-monitor";
-
 
 
 const MongoStore = mongo(session);
@@ -64,7 +62,6 @@ mongoose.connection.on("error", () => {
 app.set("port", process.env.PORT || 3000);
 app.set("views", path.join(__dirname, "../views"));
 app.set("view engine", "pug");
-app.use(expressStatusMonitor());
 app.use(compression());
 app.use(logger("dev"));
 app.use(bodyParser.json());

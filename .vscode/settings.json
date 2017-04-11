@@ -8,5 +8,5 @@
     "typescript.referencesCodeLens.enabled": true,
     "tslint.ignoreDefinitionFiles": false,
     "tslint.autoFixOnSave": true,
-    "tslint.exclude": "node_modules/**/*"  // this doesn't work'
+    "tslint.exclude": "**/node_modules/**/*" 
 }
