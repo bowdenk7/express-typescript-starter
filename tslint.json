@@ -9,10 +9,6 @@
             true,
             "spaces"
         ],
-        "linebreak-style": [
-            true,
-            "CRLF"
-        ],
         "one-line": [
             true,
             "check-open-brace",
