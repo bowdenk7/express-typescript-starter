@@ -7,8 +7,8 @@
 
 
 
-import passport = require('passport');
-import express = require('express');
+import passport = require("passport");
+import express = require("express");
 
 interface IStrategyOptions {
     usernameField?: string;
