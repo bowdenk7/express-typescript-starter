@@ -13,7 +13,7 @@
     "build": "npm run build-sass && npm run build-ts && npm run tslint",
     "watch": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"gulp watch-ts\" \"nodemon app/server.js\"",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"gulp watch-ts\" \"nodemon --debug app/server.js\"",
-    "test": "jest",
+    "test": "jest --forceExit",
     "build-ts": "gulp build-ts",
     "watch-ts": "gulp watch-ts",
     "build-sass": "node-sass src/public/css/main.scss app/public/css/main.css",
@@ -22,6 +22,9 @@
     "tslint": "gulp tslint"
   },
   "jest": {
+    "globals": {
+      "__TS_CONFIG__": "tsconfig.tests.json"
+    },
     "moduleFileExtensions": [
       "ts",
       "tsx",
@@ -32,7 +35,8 @@
     },
     "testMatch": [
       "**/test/**/*.test.(ts|js)"
-    ]
+    ],
+    "testEnvironment": "node"
   },
   "dependencies": {
     "async": "^2.1.2",
