@@ -6,7 +6,6 @@ import * as graph from "fbgraph";
 import * as twilio from "twilio";
 import {Response, Request, NextFunction} from "express";
 
-
 const Twilio = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
 /**

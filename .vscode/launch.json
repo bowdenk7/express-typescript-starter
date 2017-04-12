@@ -10,12 +10,14 @@
             "name": "Launch Program",
             "program": "${workspaceRoot}/app/server.js",
             "args": [
-                "inspect"
+                "--inspect"
             ],
             "smartStep": true,
             "outFiles": [
-                "./app/**/*.js"
-            ]
+                "../app/**/*.js"
+            ],
+            "protocol": "inspector"
         }
     ]
 }
+
