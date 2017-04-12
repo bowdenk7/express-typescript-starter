@@ -3,7 +3,6 @@ var sourcemaps = require('gulp-sourcemaps');
 var gulpTs = require("gulp-typescript");
 var tslint = require("gulp-tslint");
 
-
 var tsProject = gulpTs.createProject("tsconfig.json");
 
 gulp.task("build-ts", function () {
