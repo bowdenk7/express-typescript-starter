@@ -1,12 +1,11 @@
-import * as request from "supertest";
+import * as supertest from "supertest";
 import {default as app} from "../src/server";
 
-// let request = require("supertest");
-// let app = require("../src/server");
+const request = supertest("http://localhost:8000");
 
 describe("GET /api", () => {
   it("should return 200 OK", () => {
-    request(app)
+    request
       .get("/api")
       .expect(200);
   });
