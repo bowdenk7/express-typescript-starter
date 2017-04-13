@@ -175,7 +175,7 @@ export let postUpdatePassword = (req: Request, res: Response, next: NextFunction
     return res.redirect("/account");
   }
 
-  User.findById(req.user.id, (err, user: any) => {
+  User.findById(req.user.id, (err, user: UserModel) => {
     if (err) { return next(err); }
     user.password = req.body.password;
     user.save((err: WriteError) => {
