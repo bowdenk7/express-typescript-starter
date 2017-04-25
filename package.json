@@ -1,7 +1,7 @@
 {
   "name": "express-typescript-starter",
   "version": "0.1.0",
-  "description": "A boilerplate for Node.js express app with TypeScript",
+  "description": "A starting point for Node.js express apps with TypeScript",
   "repository": {
     "type": "git",
     "url": "https://github.com/sahat/hackathon-starter.git"
@@ -10,14 +10,16 @@
   "license": "MIT",
   "scripts": {
     "start": "npm run watch",
-    "build": "npm run build-sass && npm run build-ts && npm run tslint",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"nodemon app/server.js\"",
+    "build": "npm run build-sass && npm run build-ts && npm run tslint && npm run copy-static-assets",
+    "serve": "node dist/server.js",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"Sass,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-sass\" \"npm run watch-ts\" \"nodemon dist/server.js\"",
     "test": "jest --forceExit",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
-    "build-sass": "node-sass src/public/css/main.scss app/public/css/main.css",
-    "watch-sass": "node-sass -w src/public/css/main.scss app/public/css/main.css",
-    "tslint": "tslint -c tslint.json -p tsconfig.json"
+    "build-sass": "node-sass src/public/css/main.scss dist/public/css/main.css",
+    "watch-sass": "node-sass -w src/public/css/main.scss dist/public/css/main.css",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "copy-static-assets": "node copyStaticAssets.js"
   },
   "jest": {
     "globals": {
@@ -49,7 +51,7 @@
     "express-session": "^1.14.2",
     "express-validator": "^3.1.3",
     "fbgraph": "^1.3.0",
-    "lodash": "^4.16.6",
+    "lodash": "^4.17.4",
     "lusca": "^1.4.1",
     "mongoose": "^4.6.6",
     "morgan": "^1.7.0",
@@ -58,8 +60,7 @@
     "passport-facebook": "^2.1.1",
     "passport-local": "^1.0.0",
     "pug": "^2.0.0-beta6",
-    "request": "^2.78.0",
-    "tslint": "^5.0.0"
+    "request": "^2.78.0"
   },
   "devDependencies": {
     "@types/async": "^2.0.40",
@@ -71,7 +72,7 @@
     "@types/express-session": "0.0.32",
     "@types/jest": "^19.2.2",
     "@types/jquery": "^2.0.41",
-    "@types/lodash": "^4.14.60",
+    "@types/lodash": "^4.14.63",
     "@types/mongodb": "^2.1.43",
     "@types/mongoose": "^4.7.9",
     "@types/morgan": "^1.7.32",
@@ -85,8 +86,7 @@
     "concurrently": "^3.4.0",
     "jest": "^19.0.2",
     "node-sass": "^4.5.2",
-    "sinon": "^1.17.6",
-    "sinon-mongoose": "^1.3.0",
+    "shelljs": "^0.7.7",
     "supertest": "^2.0.1",
     "ts-jest": "^19.0.8",
     "tslint": "^5.0.0",

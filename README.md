@@ -34,15 +34,72 @@ npm start
 
 A majority of this quick start's content was inspired or adapted from Sahat's excellent [Hackathon Starter project](https://github.com/sahat/hackathon-starter).
 
-License
--------
+## Project Structure
+-----------------
 
-The MIT License (MIT)
+Folder structure:
 
-Copyright (c) 2014-2016 Sahat Yalkabov
+> Note! This assumes that you have already built the app using `npm run build` or `yarn run build` 
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+| Name | Description |
+| ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| **.vscode**                         | Contains VS Code specific settings                                                            |
+| **dist**                            | Contains the distributable (or output) from your TypeScript build. This is the code you ship  |
+| **node_modules**                    | Contains all your npm dependencies                                                            |
+| **src**                             | Contains your source code that will be compiled to the dist dir                               |
+| **src/config**                      | Passport authentication strategies and login middleware. Add other complex config code here   |
+| **src/controllers**                 | Controllers define functions that respond to various http requests                            |
+| **src/models**                      | Models define Mongoose schemas that will be used in storing and retrieving data from MongoDB  |
+| **src/public**                      | Static assets that will be used client side                                                   |
+| **src/types**                       | Holds .d.ts files not found on DefinitelyTyped. Covered more in this [section](TODO)          |
+| **src**/server.ts                   | Entry point to your express app                                                               |
+| **test**                            | Contains your tests. Seperate from source because there is a different build process.         |
+| **views**                           | Views define how your app renders on the client. In this case we're using pug                 |
+| .env.example                        | API keys, tokens, passwords, database URI. Clone this, but don't check it in to public repos. |
+| .travis.yml                         | Used to configure Travis CI build                                                             |
+| tsconfig.json                       | Config settings for compiling server code written in TypeScript                               |
+| tsconfig.tests.json                 | Config settings for compiling tests written in TypeScript                                     |
+| tslint.json                         | Config settings for TSLint code style checking                                                |
+| yarn.lock                           | Contains same dependency version info as package.json, but used with yarn                     |
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+## Dependencies
+--------------------
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+Dependencies are managed through `package.json`.
+`npm` is the node package manager which you get
+In that file you'll find two sections:
+- `dependencies`
+
+| Package                         | Description                                                           |
+| ------------------------------- | --------------------------------------------------------------------- |
+| async                           | Utility library that provides asynchronous control flow.              |
+| bcrypt-nodejs                   | Library for hashing and salting user passwords.                       |
+| body-parser                     | Express 4 middleware.                                                 |
+| compression                     | Express 4 middleware.                                                 |
+| connect-mongo                   | MongoDB session store for Express.                                    |
+| dotenv                          | Loads environment variables from .env file.                           |
+| errorhandler                    | Express 4 middleware.                                                 |
+| express                         | Node.js web framework.                                                |
+| express-flash                   | Provides flash messages for Express.                                  |
+| express-session                 | Express 4 middleware.                                                 |
+| express-validator               | Easy form validation for Express.                                     |
+| fbgraph                         | Facebook Graph API library.                                           |
+| lusca                           | CSRF middleware.                                                      |
+| mongoose                        | MongoDB ODM.                                                          |
+| morgan                          | Express 4 middleware.                                                 |
+| nodemailer                      | Node.js library for sending emails.                                   |
+| passport                        | Simple and elegant authentication library for node.js                 |
+| passport-facebook               | Sign-in with Facebook plugin.                                         |
+| passport-local                  | Sign-in with Username and Password plugin.                            |
+| pug (jade)				      | Template engine for Express.                                          |
+| request                         | Simplified HTTP request library.                                      |
+
+| Package                         | Description                                                           |
+| ------------------------------- | --------------------------------------------------------------------- |
+| concurrently                    | Utility that manages multiple concurrent tasks. Used with npm scripts |
+| jest                            | Reports real-time server metrics for Express.                         |
+| node-sass                       | GitHub API library.                                                   |
+| supertest                       | HTTP assertion library.                                               |
+| ts-test                         | Instagram API library.                                                |
+| tslint                          | Linter (similar to ESLint) for TypeScript files                       |
+| typescript                      | JavaScript compiler/type checker that boosts JavaScript productivity  |

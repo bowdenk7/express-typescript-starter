@@ -8,13 +8,13 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}/app/server.js",
+            "program": "${workspaceRoot}/dist/server.js",
             "args": [
                 "--inspect"
             ],
             "smartStep": true,
             "outFiles": [
-                "../app/**/*.js"
+                "../dist/**/*.js"
             ],
             "protocol": "inspector"
         }

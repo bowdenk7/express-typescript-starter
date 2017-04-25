@@ -5,7 +5,7 @@
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
-        "outDir": "app",
+        "outDir": "dist",
         "baseUrl": ".",
         "paths": {
             "*": [
@@ -19,6 +19,6 @@
     ],
     "exclude": [
         "node_modules",
-        "app"
+        "dist"
     ]
 }

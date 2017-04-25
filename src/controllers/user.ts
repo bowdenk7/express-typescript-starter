@@ -287,8 +287,8 @@ export let postReset = (req: Request, res: Response, next: NextFunction) => {
       });
       const mailOptions = {
         to: user.email,
-        from: "hackathon@starter.com",
-        subject: "Your Hackathon Starter password has been changed",
+        from: "express-ts@starter.com",
+        subject: "Your password has been changed",
         text: `Hello,\n\nThis is a confirmation that the password for your account ${user.email} has just been changed.\n`
       };
       transporter.sendMail(mailOptions, (err) => {
