@@ -1,4 +1,4 @@
-
+--
 Express TypeScript Starter
 =======================
 
@@ -14,7 +14,7 @@ Express TypeScript Starter
 # Getting started
 - Clone the repo
 ```
-git clone https://github.com/bowdenk7/express-typescript-starter.git project_name
+git clone --depth=1 https://github.com/bowdenk7/express-typescript-starter.git project_name
 ```
 - Install dependencies
 ```
