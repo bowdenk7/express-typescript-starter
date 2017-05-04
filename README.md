@@ -94,6 +94,8 @@ In that file you'll find two sections:
 | pug (jade)				      | Template engine for Express.                                          |
 | request                         | Simplified HTTP request library.                                      |
 
+- `dev dependencies`
+
 | Package                         | Description                                                           |
 | ------------------------------- | --------------------------------------------------------------------- |
 | concurrently                    | Utility that manages multiple concurrent tasks. Used with npm scripts |
