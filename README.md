@@ -2,7 +2,7 @@
 Express TypeScript Starter
 =======================
 
-[![Dependency Status](https://david-dm.org/bowdenk7/express-typescript-starter.svg)](https://david-dm.org/bowdenk7/express-typescript-starter) [![Build Status](https://travis-ci.org/sahat/hackathon-starter.svg?branch=master)](https://travis-ci.org/bowdenk7/express-typescript-starter) 
+[![Dependency Status](https://david-dm.org/bowdenk7/express-typescript-starter.svg)](https://david-dm.org/bowdenk7/express-typescript-starter) [![Build Status](https://travis-ci.org/bowdenk7/express-typescript-starter.svg?branch=master)](https://travis-ci.org/bowdenk7/express-typescript-starter) 
 
 **Live Demo**: TODO
 
@@ -36,20 +36,30 @@ The main purpose of this repo is to show a good end-to-end project setup and wor
 I will try to keep this as up-to-date as possible, but community contributions and recommendations for improvements are encourage and will be most welcome. 
 
 In the next few sections I will call out everything that changes when adding TypeScript to an Express project.
-Anywhere that configuration changes are required, they have already been made in this project, but feel free to use this as a reference for converting other Node.js project to TypeScript.
+Note that all of this has already been setup for this project, but feel free to use this as a reference for converting other Node.js project to TypeScript.
 
 > **Note on editors!** - TypeScript has great support in [every editor](http://www.typescriptlang.org/index.html#download-links), but this project has been preconfigured for use with [VS Code](https://code.visualstudio.com/). 
 Throughout the README I'll try to call out specific places where VS code really shines or where this project has been setup to take advantage of specific features.
 
-## Adding TypeScript
-TypeScript itself is simple to add to any project.
+## Getting TypeScript
+TypeScript itself is simple to add to any project with `npm`.
+```
+npm install -D typescript
+```
+If you're using VS Code then you're good to go!
+VS Code will detect and use the TypeScript version you have installed in your `node_modules` folder. 
+For other editors, make sure you have the corresponding [TypeScript plugin](http://www.typescriptlang.org/index.html#download-links). 
 
 ## Project Structure
 -----------------
+The most obvious difference in a TypeScript + Node project is the folder structure.
+In a TypeScript project, you it's best to have seperate _source_  and _distributable_ files.
+TypeScript (`.ts`) files live in your `src` folder and after compilation are output as JavaScript (`.js`) in the `dist` folder.
+The `test` and `views` folders remain top level as expected. 
 
-Folder structure:
+The full folder structure of this app is explained below:
 
-> **Note!** This assumes that you have already built the app using `npm run build` or `yarn run build` 
+> **Note!** Make sure you have already built the app using `npm run build` or `yarn run build` 
 
 | Name | Description |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
@@ -74,8 +84,46 @@ Folder structure:
 | tslint.json              | Config settings for TSLint code style checking                                                |
 | yarn.lock                | Contains same dependency version info as package.json, but used with yarn                     |
 
-## Build scripts
+## Building the project
+It is rare for JavaScript projects not to have some kind of build pipeline these days, however Node projects typically have the least amount build configuration. 
+Because of this I've tried to keep the build as simple as possible.
+If you're concerned about compile time, the main watch task takes ~2s to refresh.
 
+### Configuring TypeScript's compile
+TypeScript uses the file `tsconfig.json` to adjust project compile options.
+Let's disect this project's `tsconfig.json`:
+
+```json
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "dist",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*",
+                "src/types/*"
+            ]
+        }
+    },
+```
+
+| Option | Description |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `"module": "commonjs"`             | The **output** module type (in your `.js` files). Node uses commonjs, so that is what we use here      |
+| `"target": "es6"`                  | The output language level. Node supports ES6, so we can target that here                               |
+| `"noImplicitAny": true`            | Enables a stricter setting which throws errors when something has a default `any` value                |
+| `"moduleResolution": "node"`       | TypeScript attempts to mimic Node's module resolution strategy. Read more [here](https://www.typescriptlang.org/docs/handbook/module-resolution.html#node)                                                                    |
+| `"sourceMap": true`                | We want source maps to be output along side our JavaScript. See the [debugging](TODO) section          |
+| `"outDir": "dist"`                 | Location to output `.js` files after compilation                                                       |
+| `"baseUrl": "."`                   | Part of configuring module resolution. See [path mapping section]()                                    |
+| `paths: {...}`                     | Part of configuring module resolution. See [path mapping section]()                                    |
+
+
+### Running the build
 All the different build steps are orchestrated via [npm scripts](https://docs.npmjs.com/misc/scripts).
 Npm scripts basically allow us to call (and chain) terminal commands via npm.
 This is nice because most JavaScript tools have easy to use command line utilities allowing us to not need grunt or gulp to manage our builds.
@@ -85,7 +133,7 @@ You'll notice that npm scripts can call eachother which makes it easy to compose
 Below is a list of all the scripts this template has available:
 
 
-| Name | Description |
+| Npm Script | Description |
 | ------------------------- | ------------------------------------------------------------------------------------------------- |
 | `prestart`                | Called automatically before start. Makes sure initial `.css` files are built.                     |
 | `start`                   | Runs full build before starting all watch tasks. Can be invoked with `npm start`                  |
@@ -167,7 +215,7 @@ If you try to install a `.d.ts` file from `@types` and it isn't found, or you ch
 In the `src` folder of this project, you'll find the `types` folder which holds the `.d.ts` files that aren't on DefinitelyTyped (or weren't as of the time of this writing).
 
 #### Setting up TypeScript to look for `.d.ts` files in another folder
-Above I mentioned the compiler knows to look in `node_modules/@types` by default, in order to help the compiler find our own `.d.ts` files we have to add a path mapping to our `tsconfig.json`.
+The compiler knows to look in `node_modules/@types` by default, but to help the compiler find our own `.d.ts` files we have to configure path mapping in our `tsconfig.json`.
 Path mapping can get pretty confusing, but the basic idea is that the TypeScript compiler will look in specific places, in a specific order when resolving modules, and we have the ability to tell the compiler exactly how to do it.
 In the `tsconfig.json` for this project you'll see the following:
 ```json
