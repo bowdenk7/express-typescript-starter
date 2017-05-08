@@ -5,13 +5,13 @@ Express TypeScript Starter
 
 **Live Demo**: TODO
 
-# Prereqs
+# Pre-reqs
 - Install [Node.js](https://nodejs.org/en/)
 - Install [MongoDB](https://docs.mongodb.com/manual/installation/)
 - Install [VS Code](https://code.visualstudio.com/)
 
 # Getting started
-- Clone the repo
+- Clone the repository
 ```
 git clone --depth=1 https://github.com/bowdenk7/express-typescript-starter.git <project_name>
 ```
@@ -31,13 +31,13 @@ npm start
 Navigate to `http://localhost:3000`
 
 # TypeScript + Node 
-The main purpose of this repo is to show a good end-to-end project setup and workflow for writing Node code in TypeScript.
+The main purpose of this repository is to show a good end-to-end project setup and workflow for writing Node code in TypeScript.
 I will try to keep this as up-to-date as possible, but community contributions and recommendations for improvements are encourage and will be most welcome. 
 
 In the next few sections I will call out everything that changes when adding TypeScript to an Express project.
 Note that all of this has already been setup for this project, but feel free to use this as a reference for converting other Node.js project to TypeScript.
 
-> **Note on editors!** - TypeScript has great support in [every editor](http://www.typescriptlang.org/index.html#download-links), but this project has been preconfigured for use with [VS Code](https://code.visualstudio.com/). 
+> **Note on editors!** - TypeScript has great support in [every editor](http://www.typescriptlang.org/index.html#download-links), but this project has been pre-configured for use with [VS Code](https://code.visualstudio.com/). 
 Throughout the README I'll try to call out specific places where VS code really shines or where this project has been setup to take advantage of specific features.
 
 ## Getting TypeScript
@@ -51,7 +51,7 @@ For other editors, make sure you have the corresponding [TypeScript plugin](http
 
 ## Project Structure
 The most obvious difference in a TypeScript + Node project is the folder structure.
-In a TypeScript project, you it's best to have seperate _source_  and _distributable_ files.
+In a TypeScript project, you it's best to have separate _source_  and _distributable_ files.
 TypeScript (`.ts`) files live in your `src` folder and after compilation are output as JavaScript (`.js`) in the `dist` folder.
 The `test` and `views` folders remain top level as expected. 
 
@@ -89,7 +89,7 @@ If you're concerned about compile time, the main watch task takes ~2s to refresh
 
 ### Configuring TypeScript compilation
 TypeScript uses the file `tsconfig.json` to adjust project compile options.
-Let's disect this project's `tsconfig.json`, starting with the `compilerOptions` which details how your project is compiled. 
+Let's dissect this project's `tsconfig.json`, starting with the `compilerOptions` which details how your project is compiled. 
 
 ```json
     "compilerOptions": {
@@ -142,7 +142,7 @@ Npm scripts basically allow us to call (and chain) terminal commands via npm.
 This is nice because most JavaScript tools have easy to use command line utilities allowing us to not need grunt or gulp to manage our builds.
 If you open `package.json`, you will see a `scripts` section with all the different scripts you can call.
 To call a script, simply run `npm run <script-name>` (or `yarn run <script-name` if using yarn) from the command line.
-You'll notice that npm scripts can call eachother which makes it easy to compose complex builds out of simple individual build scrpits.
+You'll notice that npm scripts can call each other which makes it easy to compose complex builds out of simple individual build scripts.
 Below is a list of all the scripts this template has available:
 
 
@@ -154,9 +154,9 @@ Below is a list of all the scripts this template has available:
 | `watch`                   | Runs all watch tasks (TypeScript, Sass, Node). Use this if you're not touching static assets.     |
 | `test`                    | Runs tests using Jest test runner                                                                 |
 | `build-ts`                | Compiles all source `.ts` files to `.js` files in the `dist` folder                               |
-| `watch-ts`                | Same as `build-ts` but continuously watches `.ts` files and recompiles when needed                |
+| `watch-ts`                | Same as `build-ts` but continuously watches `.ts` files and re-compiles when needed                |
 | `build-sass`              | Compiles all `.scss` files to `.css` files                                                        |
-| `watch-sass`              | Same as `build-sass` but continously watches `.scss` files and recompiles when needed             |
+| `watch-sass`              | Same as `build-sass` but continuously watches `.scss` files and re-compiles when needed             |
 | `tslint`                  | Runs TSLint on project files                                                                      |
 | `copy-static-assets`      | Calls script that copies JS libs, fonts, and images to dist directory                             |
 
@@ -166,10 +166,10 @@ This is great because once you have a `.d.ts` file, TypeScript can type check th
 The TypeScript community actively shares all of the most up-to-date `.d.ts` files for popular libraries on a GitHub repository called [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types).
 Making sure that your `.d.ts` files are setup correctly is super important because once they're in place, you get an incredible amount high quality of type checking (and thus bug catching, IntelliSense, and other editor tools) for free.
 
-> **Note!** Because we're using `"noImplicityAny": true`, we are required to have a `.d.ts` file for **every** library we use. While you could set `noImplicitAny` to `false` to silence errors about missing `.d.ts` files, it is a best practice to have a `.d.ts` file for every library. (Even the `.d.ts` file is [basically empty!](#writing-a-dts-file)) 
+> **Note!** Because we're using `"noImplicitAny": true`, we are required to have a `.d.ts` file for **every** library we use. While you could set `noImplicitAny` to `false` to silence errors about missing `.d.ts` files, it is a best practice to have a `.d.ts` file for every library. (Even the `.d.ts` file is [basically empty!](#writing-a-dts-file)) 
 
 ### Installing `.d.ts` files from DefinitelyTyped
-For the most part, you'll find `.d.ts` files for the libaries you are using on DefinitelyTyped.
+For the most part, you'll find `.d.ts` files for the libraries you are using on DefinitelyTyped.
 These `.d.ts` files can be easily installed into your project by using the npm scope `@types`.
 For example, if we want the `.d.ts` file for jQuery, we can do so with `npm install --save-dev @types/jquery`.
 
@@ -210,7 +210,7 @@ In this project, `bcrypt-nodejs.d.ts`, `fbgraph.d.ts`, and `lusca.d.ts` were all
 #### Writing a `.d.ts` file
 If generating a `.d.ts` using `dts-gen` isn't working, [you should tell me about it first](TODO-survey-link), but then you can create your own `.d.ts` file.
 
-If you just want to silence the compiler for the time being, create a file called `<some-libary>.d.ts` in your `types` folder and then add this line of code:
+If you just want to silence the compiler for the time being, create a file called `<some-library>.d.ts` in your `types` folder and then add this line of code:
 ```ts
 declare module "<some-library>";
 ```
@@ -260,7 +260,7 @@ First you need to make sure your `tsconfig.json` has source map generation enabl
 } 
 ```
 With this option enabled, next to every `.js` file that the TypeScript compiler outputs there will be a `.map.js` file as well.
-This `.map.js` file provides the information neccesary to map back to the source `.ts` file while debugging.
+This `.map.js` file provides the information necessary to map back to the source `.ts` file while debugging.
 
 > **Note!** - It is also possible to generate "inline" source maps using `"inlineSourceMap": true`.
 This is more common when writing client side code because some bundlers need inline source maps to preserve the mapping through the bundle.
@@ -269,7 +269,7 @@ Because we are writing Node.js code, we don't have to worry about this.
 ### Using the debugger in VS Code
 Debugging is one of the places where VS Code really shines over other editors.
 Node.js debugging in VS Code is easy to setup and even easier to use. 
-This project comes preconfigured with everything you need to get started.
+This project comes pre-configured with everything you need to get started.
 
 When you hit `F5` in VS Code, it looks for a top level `.vscode` folder with a `launch.json` file.
 In this file, you can tell VS Code exactly what you want to do:
@@ -304,6 +304,46 @@ VS Code will try to launch on the same port and error out.
 Likewise be sure to stop the debugger before returning to your normal `npm start` process.
 
 ## Testing
+For this project, I chose [Jest](https://facebook.github.io/jest/) as our test framework.
+While Mocha is probably more common, Mocha seems to be looking for a new maintainer and setting up TypeScript testing in Jest is wicked simple.
+
+### Install the components
+To add TypeScript + Jest support, first install a few npm packages:
+```
+npm install -D jest ts-jest
+```
+`jest` is the testing framework itself, and `ts-jest` is just a simple function to make running TypeScript tests a little easier.
+
+### Configure Jest
+Jest's configuration lives in `package.json`, so let's open it up and add the following code:
+```json
+"jest": {
+    "globals": {
+      "__TS_CONFIG__": "tsconfig.json"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts)$": "./node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "**/test/**/*.test.(ts|js)"
+    ],
+    "testEnvironment": "node"
+  },
+```
+Basically we are telling Jest that we want it to consume all files that match the pattern `"**/test/**/*.test.(ts|js)"` (all `.test.ts`/`.test.js` files in the `test` folder), but we want to preprocess the `.ts` files first. 
+This preprocess step is very flexible, but in our case, we just want to compile our TypeScript to JavaScript using our `tsconfig.json`.
+This all happens in memory when you run the tests, so there are no output `.js` test files for you to manage.   
+
+### Running tests
+
+
+### Writing tests
+Writing tests for web apps has entire books dedicated to it and best practices are strongly influenced by personal style, so I'm deliberately avoiding discussing how or when to write tests in this guide.
+However, if prescriptive guidance on testing is something that you're interested in, [let me know](TODO-survey-link), I'll do some homework and get back to you.
 
 ## Using ES6 Modules
 
@@ -312,9 +352,7 @@ Likewise be sure to stop the debugger before returning to your normal `npm start
 ## Configuring your VS Code environment
 
 # Dependencies
-
 Dependencies are managed through `package.json`.
-`npm` is the node package manager which you get
 In that file you'll find two sections:
 ## `dependencies`
 
@@ -353,6 +391,8 @@ In that file you'll find two sections:
 | ts-test                         | Instagram API library.                                                |
 | tslint                          | Linter (similar to ESLint) for TypeScript files                       |
 | typescript                      | JavaScript compiler/type checker that boosts JavaScript productivity  |
+
+To install or update these dependencies you can use either `npm` or `yarn`.
 
 # Other
 Here is a section of miscellaneous tips. 

@@ -23,11 +23,10 @@
   },
   "jest": {
     "globals": {
-      "__TS_CONFIG__": "tsconfig.tests.json"
+      "__TS_CONFIG__": "tsconfig.json"
     },
     "moduleFileExtensions": [
       "ts",
-      "tsx",
       "js"
     ],
     "transform": {
