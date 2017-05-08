@@ -1,4 +1,3 @@
---
 Express TypeScript Starter
 =======================
 
@@ -51,7 +50,6 @@ VS Code will detect and use the TypeScript version you have installed in your `n
 For other editors, make sure you have the corresponding [TypeScript plugin](http://www.typescriptlang.org/index.html#download-links). 
 
 ## Project Structure
------------------
 The most obvious difference in a TypeScript + Node project is the folder structure.
 In a TypeScript project, you it's best to have seperate _source_  and _distributable_ files.
 TypeScript (`.ts`) files live in your `src` folder and after compilation are output as JavaScript (`.js`) in the `dist` folder.
@@ -71,14 +69,14 @@ The full folder structure of this app is explained below:
 | **src/controllers**      | Controllers define functions that respond to various http requests                            |
 | **src/models**           | Models define Mongoose schemas that will be used in storing and retrieving data from MongoDB  |
 | **src/public**           | Static assets that will be used client side                                                   |
-| **src/types**            | Holds .d.ts files not found on DefinitelyTyped. Covered more in this [section](TODO)          |
+| **src/types**            | Holds .d.ts files not found on DefinitelyTyped. Covered more in this [section](#)          |
 | **src**/server.ts        | Entry point to your express app                                                               |
 | **test**                 | Contains your tests. Seperate from source because there is a different build process.         |
 | **views**                | Views define how your app renders on the client. In this case we're using pug                 |
 | .env.example             | API keys, tokens, passwords, database URI. Clone this, but don't check it in to public repos. |
 | .travis.yml              | Used to configure Travis CI build                                                             |
 | .copyStaticAssets.js     | Build script that copies images, fonts, and JS libs to the dist folder                        |
-| package.json             | File that contains npm dependencies as well as [build scripts](TODO)                          |
+| package.json             | File that contains npm dependencies as well as [build scripts](#what-if-a-library-isnt-on-definitelytyped)                          |
 | tsconfig.json            | Config settings for compiling server code written in TypeScript                               |
 | tsconfig.tests.json      | Config settings for compiling tests written in TypeScript                                     |
 | tslint.json              | Config settings for TSLint code style checking                                                |
@@ -89,9 +87,9 @@ It is rare for JavaScript projects not to have some kind of build pipeline these
 Because of this I've tried to keep the build as simple as possible.
 If you're concerned about compile time, the main watch task takes ~2s to refresh.
 
-### Configuring TypeScript's compile
+### Configuring TypeScript compilation
 TypeScript uses the file `tsconfig.json` to adjust project compile options.
-Let's disect this project's `tsconfig.json`:
+Let's disect this project's `tsconfig.json`, starting with the `compilerOptions` which details how your project is compiled. 
 
 ```json
     "compilerOptions": {
@@ -111,16 +109,31 @@ Let's disect this project's `tsconfig.json`:
     },
 ```
 
-| Option | Description |
+| `compilerOptions` | Description |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `"module": "commonjs"`             | The **output** module type (in your `.js` files). Node uses commonjs, so that is what we use here      |
+| `"module": "commonjs"`             | The **output** module type (in your `.js` files). Node uses commonjs, so that is what we use           |
 | `"target": "es6"`                  | The output language level. Node supports ES6, so we can target that here                               |
 | `"noImplicitAny": true`            | Enables a stricter setting which throws errors when something has a default `any` value                |
 | `"moduleResolution": "node"`       | TypeScript attempts to mimic Node's module resolution strategy. Read more [here](https://www.typescriptlang.org/docs/handbook/module-resolution.html#node)                                                                    |
-| `"sourceMap": true`                | We want source maps to be output along side our JavaScript. See the [debugging](TODO) section          |
+| `"sourceMap": true`                | We want source maps to be output along side our JavaScript. See the [debugging](#debugging) section          |
 | `"outDir": "dist"`                 | Location to output `.js` files after compilation                                                       |
-| `"baseUrl": "."`                   | Part of configuring module resolution. See [path mapping section]()                                    |
-| `paths: {...}`                     | Part of configuring module resolution. See [path mapping section]()                                    |
+| `"baseUrl": "."`                   | Part of configuring module resolution. See [path mapping section](#installing-dts-files-from-definitelytyped) |
+| `paths: {...}`                     | Part of configuring module resolution. See [path mapping section](#installing-dts-files-from-definitelytyped) |
+
+
+
+The rest of the file define the TypeScript project context.
+The project context is basically a set of options that determine which files are compiled when the compiler is invoked with a specific `tsconfig.json`.
+In this case, we use the following to define our project context: 
+```json
+    "include": [
+        "src/**/*"
+    ]
+```
+`include` takes an array of glob patterns of files to include in the compilation.
+This project is fairly simple and all of our .ts files are under the `src` folder.
+For more complex setups, you can include an `exclude` array of glob patterns that removes specific files from the set defined with `include`.
+There is also a `files` option which takes an array of individual file names which overrides both `include` and `exclude`.
 
 
 ### Running the build
@@ -135,11 +148,10 @@ Below is a list of all the scripts this template has available:
 
 | Npm Script | Description |
 | ------------------------- | ------------------------------------------------------------------------------------------------- |
-| `prestart`                | Called automatically before start. Makes sure initial `.css` files are built.                     |
 | `start`                   | Runs full build before starting all watch tasks. Can be invoked with `npm start`                  |
 | `build`                   | Full build. Runs ALL build tasks (`build-sass`, `build-ts`, `tslint`, `copy-static-assets`)       |
 | `serve`                   | Runs node on `dist/server.js` which is the apps entry point                                       |
-| `watch`                   | Runs all watch tasks (TypeScript, Sass, Node)                                                     |
+| `watch`                   | Runs all watch tasks (TypeScript, Sass, Node). Use this if you're not touching static assets.     |
 | `test`                    | Runs tests using Jest test runner                                                                 |
 | `build-ts`                | Compiles all source `.ts` files to `.js` files in the `dist` folder                               |
 | `watch-ts`                | Same as `build-ts` but continuously watches `.ts` files and recompiles when needed                |
@@ -148,14 +160,154 @@ Below is a list of all the scripts this template has available:
 | `tslint`                  | Runs TSLint on project files                                                                      |
 | `copy-static-assets`      | Calls script that copies JS libs, fonts, and images to dist directory                             |
 
+## Type Definition (`.d.ts`) Files
+TypeScript uses `.d.ts` files to provide types for JavaScript libraries that were not written in TypeScript.
+This is great because once you have a `.d.ts` file, TypeScript can type check that library and provide you better help in your editor.
+The TypeScript community actively shares all of the most up-to-date `.d.ts` files for popular libraries on a GitHub repository called [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types).
+Making sure that your `.d.ts` files are setup correctly is super important because once they're in place, you get an incredible amount high quality of type checking (and thus bug catching, IntelliSense, and other editor tools) for free.
 
-## Dependencies
---------------------
+> **Note!** Because we're using `"noImplicityAny": true`, we are required to have a `.d.ts` file for **every** library we use. While you could set `noImplicitAny` to `false` to silence errors about missing `.d.ts` files, it is a best practice to have a `.d.ts` file for every library. (Even the `.d.ts` file is [basically empty!](#writing-a-dts-file)) 
+
+### Installing `.d.ts` files from DefinitelyTyped
+For the most part, you'll find `.d.ts` files for the libaries you are using on DefinitelyTyped.
+These `.d.ts` files can be easily installed into your project by using the npm scope `@types`.
+For example, if we want the `.d.ts` file for jQuery, we can do so with `npm install --save-dev @types/jquery`.
+
+> **Note!** Be sure to add `--save-dev` (or `-D`) to your `npm install`. `.d.ts` files are project dependencies, but only used at compile time and thus should be dev dependencies.
+
+In this template, all the `.d.ts` files have already been added to `devDependencies` in `package.json`, so you will get everything you need after running your first `npm install`.
+Once `.d.ts` files have been installed using npm, you should see them in your `node_modules/@types` folder. 
+The compiler will always look in this folder for `.d.ts` files when resolving JavaScript libraries.
+
+### What if a library isn't on DefinitelyTyped?
+If you try to install a `.d.ts` file from `@types` and it isn't found, or you check DefinitelyTyped and cannot find a specific library, you will want to create your own `.d.ts file`.
+In the `src` folder of this project, you'll find the `types` folder which holds the `.d.ts` files that aren't on DefinitelyTyped (or weren't as of the time of this writing).
+
+#### Setting up TypeScript to look for `.d.ts` files in another folder
+The compiler knows to look in `node_modules/@types` by default, but to help the compiler find our own `.d.ts` files we have to configure path mapping in our `tsconfig.json`.
+Path mapping can get pretty confusing, but the basic idea is that the TypeScript compiler will look in specific places, in a specific order when resolving modules, and we have the ability to tell the compiler exactly how to do it.
+In the `tsconfig.json` for this project you'll see the following:
+```json
+"baseUrl": ".",
+"paths": {
+    "*": [
+        "src/types/*"
+    ]
+}
+```
+This tells the TypeScript compiler that in addition to looking in `node_modules/@types` for every import (`*`) also look in our own `.d.ts` file location `<baseUrl>` + `src/types/*`.
+So when we write something like: 
+```ts
+import * as lusca from "lusca";
+```
+First the compiler will look for a `d.ts` file in `node_modules/@types` and then when it doesn't find one look in `src/types` and find our file `lusca.d.ts`.
+
+#### Using `dts-gen`
+Unless you are familiar with `.d.ts` files, I strongly recommend trying to use the tool [dts-gen](https://github.com/Microsoft/dts-gen) first.
+The [README](https://github.com/Microsoft/dts-gen#dts-gen-a-typescript-definition-file-generator) does a great job explaining how to use the tool, and for most cases, you'll get an excellent scaffold of a `.d.ts` file to start with.
+In this project, `bcrypt-nodejs.d.ts`, `fbgraph.d.ts`, and `lusca.d.ts` were all generated using `dts-gen`. 
+
+#### Writing a `.d.ts` file
+If generating a `.d.ts` using `dts-gen` isn't working, [you should tell me about it first](TODO-survey-link), but then you can create your own `.d.ts` file.
+
+If you just want to silence the compiler for the time being, create a file called `<some-libary>.d.ts` in your `types` folder and then add this line of code:
+```ts
+declare module "<some-library>";
+```
+
+If you want to invest some time into making a great `.d.ts` file that will give you great type checking and IntelliSense, the TypeScript website has great [docs on authoring `.d.ts` files](http://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html). 
+
+#### Contributing to DefinitelyTyped
+The reason it's so easy to get great `.d.ts` files for most libraries is that developers like you contribute their work back to DefinitelyTyped.
+Contributing `.d.ts` files is a great way to get into the open source community if it's something you've never tried before, and as soon as your changes are accepted, every other developer in the world has access to your work.
+
+If you're interested in giving it a shot, check out the [guidance on DefinitelyTyped](https://github.com/definitelyTyped/DefinitelyTyped/#how-can-i-contribute).
+If you're not interested, [you should tell me why](TODO-survey-link) so we can help make it easier in the future!
+
+### Summary of `.d.ts` management
+In general if you stick to the following steps you should have minimal `.d.ts` issues;
+1. After installing any npm package as a dependency or dev dependency, immediately try to install the `.d.ts` file via `@types`.
+2. If the library has a `.d.ts` file on DefinitelyTyped, the install will succeed and you are done.
+If the install fails because the package doesn't exist, continue to step 3.
+3. Make sure you project is [configured for supplying your own `d.ts` files](#setting-up-typescript-to-look-for-dts-files-in-another-folder)
+4. Try to [generate a `.d.ts` file with dts-gen](#using-dts-gen). 
+If it succeeds, you are done.
+If not, continue to step 5.
+5. Create a file called `<some-library>.d.ts` in your `types` folder.
+6. Add the following code:
+```ts
+declare module "<some-library>";
+```
+7. At this point everything should compile with no errors and you can either improve the types in the `.d.ts` file by following this [guide on authoring `.d.ts` files](http://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html) or continue with no types.
+8. If you are still having issues, let me know by sending me an email or pinging me on twitter, I will help you.
+
+## Debugging
+Debugging TypeScript is exactly like debugging JavaScript with one caveat, you need source maps.
+
+### Source maps
+Source maps allow you to drop break points in your TypeScript source code and have that break point be hit by the JavaScript that is being executed at runtime. 
+
+> **Note!** - Source maps aren't specific to TypeScript.
+Anytime JavaScript is transformed (transpiled, compiled, optimized, minified, etc) you need source maps so that the code that is executed at runtime can be _mapped_ back to the source that generated it.
+
+The best part of source maps is when configured correctly, you don't even know they exist! So let's take a look at how we do that in this project.
+
+#### Configuring source maps
+First you need to make sure your `tsconfig.json` has source map generation enabled:
+```json
+"compilerOptions" {
+    "sourceMaps": true
+} 
+```
+With this option enabled, next to every `.js` file that the TypeScript compiler outputs there will be a `.map.js` file as well.
+This `.map.js` file provides the information neccesary to map back to the source `.ts` file while debugging.
+
+> **Note!** - It is also possible to generate "inline" source maps using `"inlineSourceMap": true`.
+This is more common when writing client side code because some bundlers need inline source maps to preserve the mapping through the bundle.
+Because we are writing Node.js code, we don't have to worry about this. 
+
+### Using the debugger in VS Code
+Debugging is one of the places where VS Code really shines over other editors.
+Node.js debugging in VS Code is easy to setup and even easier to use. 
+This project comes preconfigured with everything you need to get started.
+
+#### Configuration
+When you hit `F5` in VS Code, it looks for a top level `.vscode` folder with a `launch.json` file.
+In this file, you can tell VS Code exactly what you want to do:
+
+```json
+{
+    "type": "node",
+    "request": "launch",
+    "name": "Debug",
+    "program": "${workspaceRoot}/dist/server.js",
+    "smartStep": true,
+    "outFiles": [
+        "../dist/**/*.js"
+    ],
+    "protocol": "inspector"
+}
+```
+This is mostly identical to the "Node.js: Launch Program" template with a couple minor changes:
+
+| `launch.json` Options | Description |
+| ----------------------------------------------- | --------------------------------------------------------------- |
+| `"program": "${workspaceRoot}/dist/server.js",` | Modified to point to our entry point in `dist`                  |
+| `"smartStep": true,`                            | Won't step into code that doesn't have a source map             |
+| `"outFiles": [...]`                             | Specify where output files are dropped. Use with source maps    |
+| `"protocol": inspector,`                        | Use the new Node debug protocal because we're on the latest node|
+
+
+## Testing
+
+## Configuring your VS Code environment
+
+# Dependencies
 
 Dependencies are managed through `package.json`.
 `npm` is the node package manager which you get
 In that file you'll find two sections:
-- `dependencies`
+## `dependencies`
 
 | Package                         | Description                                                           |
 | ------------------------------- | --------------------------------------------------------------------- |
@@ -181,7 +333,7 @@ In that file you'll find two sections:
 | pug (jade)				      | Template engine for Express.                                          |
 | request                         | Simplified HTTP request library.                                      |
 
-- `dev dependencies`
+## `devDependencies`
 
 | Package                         | Description                                                           |
 | ------------------------------- | --------------------------------------------------------------------- |
@@ -193,45 +345,8 @@ In that file you'll find two sections:
 | tslint                          | Linter (similar to ESLint) for TypeScript files                       |
 | typescript                      | JavaScript compiler/type checker that boosts JavaScript productivity  |
 
-## Type Definition (`.d.ts`) Files
-
-TypeScript uses `.d.ts` files to provide types for JavaScript libraries that were not written in TypeScript.
-This is great because once you have a `.d.ts` file, TypeScript can type check that library and provide you better help in your editor.
-The TypeScript community actively shares all of the most up-to-date `.d.ts` files for popular libraries on a GitHub repository called [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types).
-
-### Installing `.d.ts` files from DefinitelyTyped
-For the most part, you'll find `.d.ts` files for the libaries you are using on DefinitelyTyped.
-These `.d.ts` files can be easily installed into your project by using the npm scope `@types`.
-For example, if we want the `.d.ts` file for jQuery, we can do so with `npm install --save-dev @types/jquery`.
-
-> Note! Be sure to add `--save-dev` (or `-D`) to your `npm install`. `.d.ts` files are project dependencies, but only used at compile time and thus should be dev dependencies.
-
-In this template, all the `.d.ts` files have already been added to `devDependencies` in `package.json`, so you will get everything you need after running your first `npm install`.
-Once `.d.ts` files have been installed using npm, you should see them in your `node_modules/@types` folder. 
-The compiler will always look in this folder for `.d.ts` files when resolving JavaScript libraries.
-
-### What if a library isn't on DefinitelyTyped?
-If you try to install a `.d.ts` file from `@types` and it isn't found, or you check DefinitelyTyped and cannot find a specific library, you will want to create your own `.d.ts file`.
-In the `src` folder of this project, you'll find the `types` folder which holds the `.d.ts` files that aren't on DefinitelyTyped (or weren't as of the time of this writing).
-
-#### Setting up TypeScript to look for `.d.ts` files in another folder
-The compiler knows to look in `node_modules/@types` by default, but to help the compiler find our own `.d.ts` files we have to configure path mapping in our `tsconfig.json`.
-Path mapping can get pretty confusing, but the basic idea is that the TypeScript compiler will look in specific places, in a specific order when resolving modules, and we have the ability to tell the compiler exactly how to do it.
-In the `tsconfig.json` for this project you'll see the following:
-```json
-"paths": {
-    "*": [
-        "src/types/*"
-    ]
-}
-```
-This tells the TypeScript compiler that in addition to looking in `node_modules/@types` for every import (`*`) also look in our own '.d.ts` file location `src/types/*`.
-So when we write something like: 
-```ts
-import * as lusca from "lusca";
-```
-First the compiler will look for a `d.ts` file in `node_modules/@types` and then when it doesn't find one look in `src/types` and find our file `lusca.d.ts`.
-
+# Other
+Here is a section of miscellaneous tips. 
 
 ## Yarn vs NPM
 
@@ -242,7 +357,6 @@ Yarn is generally faster and has a few extra features like `yarn why <package>` 
 Yarn also doesn't clutter your command prompt when your npm scripts return with status 1.
 For these reasons I would personally recommend downloading and giving Yarn a shot.
 That said, everything in this template can be used with npm as well.
-
 
 # Hackathon Start Project
 A majority of this quick start's content was inspired or adapted from Sahat's excellent [Hackathon Starter project](https://github.com/sahat/hackathon-starter).
