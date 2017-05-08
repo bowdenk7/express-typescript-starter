@@ -351,6 +351,35 @@ However, if prescriptive guidance on testing is something that you're interested
 
 ## Configuring your VS Code environment
 
+### Project settings
+
+### Extensions
+
+#### TSLint
+
+#### Spellcheck
+
+## TSLint
+TSLint is a code linter which mainly helps catch minor code quality and style issues.
+TSLint is very similar to ESLint or JSLint but is built with TypeScript in mind.
+
+### TSLint rules
+Like most linters, TSLint has a wide set of configurable rules as well as support for custom rule sets.
+All rules are configured through `tslint.json`.
+In this project, we are using a fairly basic set of rules with no additional custom rules.
+The settings are largely based off the TSLint settings that we use to develop TypeScript itself.
+
+### Running TSLint
+Like the rest of our build steps, we use npm scripts to invoke TSLint.
+To run TSLint you can call the main build script or just the TSLint task.
+```
+npm run build   // runs full build including TSLint
+npm run tslint  // runs only TSLint
+```
+Notice that TSLint is not a part of the main watch task.
+It can be annoying for TSLint to clutter the output window while in the middle of writing a function, so I elected to only run it only during the full build.
+If you are interesting in seeing TSLint feedback as soon as possible, I strongly recommend the [TSLint extension in VS Code]().
+
 # Dependencies
 Dependencies are managed through `package.json`.
 In that file you'll find two sections:
