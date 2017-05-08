@@ -14,14 +14,14 @@ Express TypeScript Starter
 # Getting started
 - Clone the repo
 ```
-git clone --depth=1 https://github.com/bowdenk7/express-typescript-starter.git project_name
+git clone --depth=1 https://github.com/bowdenk7/express-typescript-starter.git <project_name>
 ```
 - Install dependencies
 ```
-cd project_name
+cd <project_name>
 npm install
 ```
-- Start your mongoDB server
+- Start your mongoDB server (you'll probably want another command prompt)
 ```
 mongod
 ```
@@ -31,16 +31,25 @@ npm start
 ```
 Navigate to `http://localhost:3000`
 
-# TODO - Writeup
+# TypeScript + Node 
+The main purpose of this repo is to show a good end-to-end project setup and workflow for writing Node code in TypeScript.
+I will try to keep this as up-to-date as possible, but community contributions and recommendations for improvements are encourage and will be most welcome. 
 
-A majority of this quick start's content was inspired or adapted from Sahat's excellent [Hackathon Starter project](https://github.com/sahat/hackathon-starter).
+In the next few sections I will call out everything that changes when adding TypeScript to an Express project.
+Anywhere that configuration changes are required, they have already been made in this project, but feel free to use this as a reference for converting other Node.js project to TypeScript.
+
+> **Note on editors!** - TypeScript has great support in [every editor](http://www.typescriptlang.org/index.html#download-links), but this project has been preconfigured for use with [VS Code](https://code.visualstudio.com/). 
+Throughout the README I'll try to call out specific places where VS code really shines or where this project has been setup to take advantage of specific features.
+
+## Adding TypeScript
+TypeScript itself is simple to add to any project.
 
 ## Project Structure
 -----------------
 
 Folder structure:
 
-> Note! This assumes that you have already built the app using `npm run build` or `yarn run build` 
+> **Note!** This assumes that you have already built the app using `npm run build` or `yarn run build` 
 
 | Name | Description |
 | ------------------------ | --------------------------------------------------------------------------------------------- |
@@ -141,10 +150,40 @@ In that file you'll find two sections:
 TypeScript uses `.d.ts` files to provide types for JavaScript libraries that were not written in TypeScript.
 This is great because once you have a `.d.ts` file, TypeScript can type check that library and provide you better help in your editor.
 The TypeScript community actively shares all of the most up-to-date `.d.ts` files for popular libraries on a GitHub repository called [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types).
+
+### Installing `.d.ts` files from DefinitelyTyped
+For the most part, you'll find `.d.ts` files for the libaries you are using on DefinitelyTyped.
 These `.d.ts` files can be easily installed into your project by using the npm scope `@types`.
-For example, if we want the `.d.ts` file for jQuery, we can fetch it with `npm install --save-dev @types/jquery`.
+For example, if we want the `.d.ts` file for jQuery, we can do so with `npm install --save-dev @types/jquery`.
 
 > Note! Be sure to add `--save-dev` (or `-D`) to your `npm install`. `.d.ts` files are project dependencies, but only used at compile time and thus should be dev dependencies.
+
+In this template, all the `.d.ts` files have already been added to `devDependencies` in `package.json`, so you will get everything you need after running your first `npm install`.
+Once `.d.ts` files have been installed using npm, you should see them in your `node_modules/@types` folder. 
+The compiler will always look in this folder for `.d.ts` files when resolving JavaScript libraries.
+
+### What if a library isn't on DefinitelyTyped?
+If you try to install a `.d.ts` file from `@types` and it isn't found, or you check DefinitelyTyped and cannot find a specific library, you will want to create your own `.d.ts file`.
+In the `src` folder of this project, you'll find the `types` folder which holds the `.d.ts` files that aren't on DefinitelyTyped (or weren't as of the time of this writing).
+
+#### Setting up TypeScript to look for `.d.ts` files in another folder
+Above I mentioned the compiler knows to look in `node_modules/@types` by default, in order to help the compiler find our own `.d.ts` files we have to add a path mapping to our `tsconfig.json`.
+Path mapping can get pretty confusing, but the basic idea is that the TypeScript compiler will look in specific places, in a specific order when resolving modules, and we have the ability to tell the compiler exactly how to do it.
+In the `tsconfig.json` for this project you'll see the following:
+```json
+"paths": {
+    "*": [
+        "src/types/*"
+    ]
+}
+```
+This tells the TypeScript compiler that in addition to looking in `node_modules/@types` for every import (`*`) also look in our own '.d.ts` file location `src/types/*`.
+So when we write something like: 
+```ts
+import * as lusca from "lusca";
+```
+First the compiler will look for a `d.ts` file in `node_modules/@types` and then when it doesn't find one look in `src/types` and find our file `lusca.d.ts`.
+
 
 ## Yarn vs NPM
 
@@ -155,3 +194,7 @@ Yarn is generally faster and has a few extra features like `yarn why <package>` 
 Yarn also doesn't clutter your command prompt when your npm scripts return with status 1.
 For these reasons I would personally recommend downloading and giving Yarn a shot.
 That said, everything in this template can be used with npm as well.
+
+
+# Hackathon Start Project
+A majority of this quick start's content was inspired or adapted from Sahat's excellent [Hackathon Starter project](https://github.com/sahat/hackathon-starter).
