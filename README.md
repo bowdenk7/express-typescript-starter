@@ -271,7 +271,6 @@ Debugging is one of the places where VS Code really shines over other editors.
 Node.js debugging in VS Code is easy to setup and even easier to use. 
 This project comes preconfigured with everything you need to get started.
 
-#### Configuration
 When you hit `F5` in VS Code, it looks for a top level `.vscode` folder with a `launch.json` file.
 In this file, you can tell VS Code exactly what you want to do:
 
@@ -297,8 +296,18 @@ This is mostly identical to the "Node.js: Launch Program" template with a couple
 | `"outFiles": [...]`                             | Specify where output files are dropped. Use with source maps    |
 | `"protocol": inspector,`                        | Use the new Node debug protocal because we're on the latest node|
 
+With this file in place, you can hit `F5` to serve the project with the debugger already attached.
+Now just set your breakpoints and go!
+
+> Warning! Make sure you don't have the project already running from another command line. 
+VS Code will try to launch on the same port and error out.
+Likewise be sure to stop the debugger before returning to your normal `npm start` process.
 
 ## Testing
+
+## Using ES6 Modules
+
+## Adding types
 
 ## Configuring your VS Code environment
 
